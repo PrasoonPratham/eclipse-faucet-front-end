@@ -8,23 +8,23 @@ const Home: NextPage = () => {
   const [address, setAddress] = useState<string | null>(null)
   const [amount, setAmount] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
-  const [success, setSuccess] = useState<boolean>(false)
+  const [signature, setSignature] = useState<string | null>(null)
 
-  console.log('FAUCET_URL', FAUCET_URL)
   const onSend = async () => {
     if (!FAUCET_URL || !address || !amount) return
 
     setSending(true)
+    setError(null)
     const res = await fetch(FAUCET_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        jsonRpc: '2.0',
+        jsonrpc: '2.0',
         id: '2',
         method: 'requestAirdrop',
-        params: [address, amount],
+        params: [address, Number(amount)],
       }),
     })
     const response = await res.json()
@@ -33,7 +33,7 @@ const Home: NextPage = () => {
     if (response.error) {
       setError(response.error.message)
     } else {
-      setSuccess(true)
+      setSignature(response.result)
     }
   }
 
@@ -42,7 +42,7 @@ const Home: NextPage = () => {
       <Head>
         <title>Eclipse Faucet</title>
       </Head>
-      <div>
+      <div className="container">
         <div className="title">
           <div className="subhead">Eclipse</div>
           <div className="header">Faucet</div>
@@ -64,7 +64,7 @@ const Home: NextPage = () => {
             Send
           </button>
         </div>
-        {success && <p>Success!</p>}
+        {signature && <p>Sent!</p>}
         {error && <p>{error}</p>}
       </div>
     </div>
