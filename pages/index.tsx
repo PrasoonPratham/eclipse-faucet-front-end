@@ -28,7 +28,6 @@ const Home: NextPage = () => {
       }),
     })
     const response = await res.json()
-    console.log('response', response)
     setSending(false)
     if (response.error) {
       setError(response.error.message)
@@ -61,7 +60,7 @@ const Home: NextPage = () => {
           <input value={amount ?? ''} onChange={(e) => setAmount(e.target.value)} placeholder="amount" type="number" />
 
           <button className="send" type="submit" onClick={onSend}>
-            Send
+            {sending ? 'Sending...' : 'Send'}
           </button>
         </div>
         {signature && <p>Sent!</p>}
