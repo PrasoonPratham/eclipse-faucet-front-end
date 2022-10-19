@@ -42,7 +42,7 @@ const Home: NextPage = () => {
         <title>Eclipse Faucet</title>
 
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:image" content="/eclipse_twitter_card.jpg" />
+        <meta name="twitter:image" content="https://fantastic-jalebi-d0f24b.netlify.app/eclipse_twitter_card.jpg" />
         <meta name="twitter:title" content="Eclipse Faucet" />
         <meta property="og:title" content="Eclipse Faucet" />
       </Head>
