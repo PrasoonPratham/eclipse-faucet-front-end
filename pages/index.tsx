@@ -2,7 +2,6 @@ import type { NextPage } from 'next'
 import Head from 'next/head'
 import { useState } from 'react'
 
-const SELF_URL = process.env.NEXT_PUBLIC_SELF_URL
 const FAUCET_URL = process.env.NEXT_PUBLIC_ECLIPSE_FAUCET_URL
 const Home: NextPage = () => {
   const [sending, setSending] = useState(false)
@@ -42,7 +41,7 @@ const Home: NextPage = () => {
       <Head>
         <title>Eclipse Faucet</title>
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:image" content={`"${SELF_URL}/eclipse_twitter_card.jpg"`} />
+        <meta name="twitter:image" content="https://faucet.eclipse.builders/eclipse_twitter_card.jpg" />
         <meta name="twitter:title" content="Eclipse Faucet" />
         <meta
           name="twitter:description"
@@ -54,7 +53,7 @@ const Home: NextPage = () => {
           property="og:description"
           content="The Eclipse testnet faucet is a client tool that allows anyone to easily request a nominal amount of Eclipse assets for testing purposes."
         />
-        <meta property="og:image" content={`"${SELF_URL}/eclipse_twitter_card.jpg"`} />
+        <meta property="og:image" content="https://faucet.eclipse.builders/eclipse_twitter_card.jpg" />
       </Head>
       <div className="container">
         <div className="title">
