@@ -6,3 +6,7 @@
     X-Content-Type-Options = "nosniff"
     X-Frame-Options = "DENY"
     X-XSS-Protection = "0"
+
+[context.production.environment]
+NEXT_PUBLIC_SELF_URL="https://faucet.eclipse.builders"
+NEXT_PUBLIC_ECLIPSE_FAUCET_URL="https://eclipse-362422.uc.r.appspot.com/faucet/airdrop"
