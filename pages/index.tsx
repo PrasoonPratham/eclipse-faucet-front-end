@@ -25,7 +25,7 @@ const Home: NextPage = () => {
         jsonrpc: '2.0',
         id: '2',
         method: 'requestAirdrop',
-        params: [address, Number(amount)],
+        params: [address, Math.round(Number(amount) * 1000000000)],
       }),
     })
     const response = await res.json()
@@ -40,16 +40,16 @@ const Home: NextPage = () => {
   return (
     <div>
       <Head>
-        <title>Eclipse Faucet</title>
+        <title>Eclipse Testnet Faucet</title>
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:image" content={`${SELF_URL}/eclipse_twitter_card.jpg`} />
-        <meta name="twitter:title" content="Eclipse Faucet" />
+        <meta name="twitter:title" content="Eclipse Testnet Faucet" />
         <meta
           name="twitter:description"
           content="The Eclipse testnet faucet is a client tool that allows anyone to easily request a nominal amount of Eclipse assets for testing purposes."
         />
 
-        <meta property="og:title" content="Eclipse Faucet" />
+        <meta property="og:title" content="Eclipse Testnet Faucet" />
         <meta
           property="og:description"
           content="The Eclipse testnet faucet is a client tool that allows anyone to easily request a nominal amount of Eclipse assets for testing purposes."
@@ -59,7 +59,7 @@ const Home: NextPage = () => {
       <div className="container">
         <div className="title">
           <div className="subhead">Eclipse</div>
-          <div className="header">Faucet</div>
+          <div className="header">Testnet Faucet</div>
         </div>
 
         <div className="form">
@@ -71,8 +71,8 @@ const Home: NextPage = () => {
             type="text"
           />
 
-          <div className="form-label">Amount (lamports)</div>
-          <input value={amount ?? ''} onChange={(e) => setAmount(e.target.value)} placeholder="amount" type="number" />
+          <div className="form-label">Amount ($MOON)</div>
+          <input value={amount ?? ''} onChange={(e) => setAmount(e.target.value)} placeholder="amount" type="number" min="0" step="0.001" />
 
           <button className="send" type="submit" onClick={onSend}>
             {sending ? 'Sending...' : 'Send'}
