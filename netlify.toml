@@ -9,4 +9,4 @@
 
 [context.production.environment]
 NEXT_PUBLIC_SELF_URL="https://faucet.eclipse.builders"
-NEXT_PUBLIC_ECLIPSE_FAUCET_URL="https://eclipse-362422.uc.r.appspot.com/faucet/airdrop"
+NEXT_PUBLIC_ECLIPSE_FAUCET_URL="https://apricot-faucet-server-vyiwhjoh7a-uc.a.run.app/faucet/airdrop"
