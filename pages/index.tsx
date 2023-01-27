@@ -43,8 +43,8 @@ export const Wallet = (props: WalletProps) => {
       <WalletProvider wallets={wallets} >
         <ReactUIWalletModalProviderDynamic>
           <div className="wallet-connect">
-            <WalletMultiButton />
-            <span >Connect to fill-in your Solana address :-) </span>
+            <WalletMultiButton id="btn-connect-wallet" />
+            <label for="btn-connect-wallet">Connect to fill in your Solana address :-)</label>
           </div>
 
           {props.children}
@@ -100,24 +100,27 @@ export const FaucetForm = () => {
 
   return (
     <div className="form">
-      <div className="form-label">Choose your Eclipse Network</div>
+      <label for="input-endpoint" className="form-label">Choose your Eclipse Network</label>
       <input
+        id="input-endpoint"
         value={eclipseRpcEndpoint}
         onChange={(e) => setEclipseRpcEndpoint(e.target.value)}
         placeholder="Eclipse Solana RPC endpoint"
         type="text"
       />
 
-      <div className="form-label">Wallet Address</div>
+      <label for="input-address" className="form-label">Wallet Address</label>
       <input
+        id="input-address"
         value={address}
         onChange={(e) => setAddress(e.target.value)}
         placeholder="public key"
         type="text"
       />
 
-      <div className="form-label">Amount ($SOL)</div>
+      <label for="input-amount" className="form-label">Amount ($SOL)</label>
       <input
+        id="input-amount"
         style={{ width: "--webkit-fill-available" }}
         value={amount ?? ''} onChange={(e) => setAmount(e.target.value)}
         placeholder="amount"
