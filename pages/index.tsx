@@ -99,7 +99,7 @@ export const FaucetForm = () => {
   }, [address, amount, eclipseRpcEndpoint])
 
   return (
-    <div className="form" >
+    <div className="form">
       <div className="form-label">Choose your Eclipse Network</div>
       <input
         value={eclipseRpcEndpoint}
@@ -107,6 +107,7 @@ export const FaucetForm = () => {
         placeholder="Eclipse Solana RPC endpoint"
         type="text"
       />
+
       <div className="form-label">Wallet Address</div>
       <input
         value={address}
@@ -118,8 +119,11 @@ export const FaucetForm = () => {
       <div className="form-label">Amount ($SOL)</div>
       <input
         style={{ width: "--webkit-fill-available" }}
-        value={amount ?? ''} onChange={(e) => setAmount(e.target.value)} placeholder="amount" type="number" min="0" step="0.001" />
-
+        value={amount ?? ''} onChange={(e) => setAmount(e.target.value)}
+        placeholder="amount"
+        type="number"
+        min="0"
+        step="0.001" />
 
       <button className="send" type="submit" onClick={onSend}>
         {sending ? 'Sending...' : 'Send'}
