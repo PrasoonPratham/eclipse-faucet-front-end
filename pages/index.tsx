@@ -43,8 +43,8 @@ export const Wallet = (props: WalletProps) => {
       <WalletProvider wallets={wallets} >
         <ReactUIWalletModalProviderDynamic>
           <div className="wallet-connect">
-            <WalletMultiButton id="btn-connect-wallet" />
-            <label for="btn-connect-wallet">Connect to fill in your Solana address :-)</label>
+            <WalletMultiButton />
+            <label>Connect to fill in your Solana address :-)</label>
           </div>
 
           {props.children}
