@@ -100,7 +100,7 @@ export const FaucetForm = () => {
 
   return (
     <div className="form">
-      <label for="input-endpoint" className="form-label">Choose your Eclipse Network</label>
+      <label htmlFor="input-endpoint" className="form-label">Choose your Eclipse Network</label>
       <input
         id="input-endpoint"
         value={eclipseRpcEndpoint}
@@ -109,7 +109,7 @@ export const FaucetForm = () => {
         type="text"
       />
 
-      <label for="input-address" className="form-label">Wallet Address</label>
+      <label htmlFor="input-address" className="form-label">Wallet Address</label>
       <input
         id="input-address"
         value={address}
@@ -118,7 +118,7 @@ export const FaucetForm = () => {
         type="text"
       />
 
-      <label for="input-amount" className="form-label">Amount ($SOL)</label>
+      <label htmlFor="input-amount" className="form-label">Amount ($SOL)</label>
       <input
         id="input-amount"
         style={{ width: "--webkit-fill-available" }}
