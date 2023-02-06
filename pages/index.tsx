@@ -59,7 +59,7 @@ export const FaucetForm = () => {
   const [address, setAddress] = useState<string>("")
   const [amount, setAmount] = useState<string | null>(null)
   const [sending, setSending] = useState(false)
-  const [eclipseRpcEndpoint, setEclipseRpcEndpoint] = useState("https://apricot.eclipsenetwork.xyz:8899")
+  const [eclipseRpcEndpoint, setEclipseRpcEndpoint] = useState("https://api.apricot.eclipsenetwork.xyz:8899")
   const [error, setError] = useState<string | null>(null)
   const [signature, setSignature] = useState<string | null>(null)
 
