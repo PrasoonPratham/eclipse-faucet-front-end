@@ -110,7 +110,7 @@ export const FaucetForm = (props: FaucetFormProps) => {
   const { connection } = useConnection();
   const { publicKey, sendTransaction } = useWallet();
 
-  const solanaRpcbody = (amount: number, address: string) => (
+  const solanaRpcBody = (amount: number, address: string) => (
     JSON.stringify({
       jsonrpc: '2.0',
       id: '2',
@@ -138,24 +138,34 @@ export const FaucetForm = (props: FaucetFormProps) => {
 
     setSending(true)
     setError(null)
-    const body = vm === ChainVm.solana ? solanaRpcbody(Number(amount), address) : neonEvmBody(Number(amount), address)
+    const body = vm === ChainVm.solana ? solanaRpcBody(Number(amount), address) : neonEvmBody(Number(amount), address)
     const res = await fetch(faucet, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body
+      body,
     })
 
-    const response = await res.json()
     setSending(false)
-    if (response.error) {
-      setError(response.error.message)
-    } else {
-      setSignature(response.result)
+    if (!res.ok) {
+      const body = await res.text()
+      setError(`Returned ${res.status}: ${body}`)
+      return
     }
-  }, [address, amount, faucetUrl])
 
+    if (vm === ChainVm.solana) {
+      const response = await res.json()
+      if (response.error) {
+        setError(response.error.message)
+      } else {
+        setSignature(response.result)
+      }
+    } else {
+      // EVM faucet doesn't return a body
+      setSignature('OK')
+    }
+  }, [address, amount, faucetUrl, vm])
 
   return (
     <div className="form">
