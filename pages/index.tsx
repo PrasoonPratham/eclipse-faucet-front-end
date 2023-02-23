@@ -122,7 +122,7 @@ export const FaucetForm = (props: FaucetFormProps) => {
   const neonEvmBody = (amount: number, address: string) => (
     JSON.stringify({
       amount,
-      address
+      wallet: address,
     })
   )
 
