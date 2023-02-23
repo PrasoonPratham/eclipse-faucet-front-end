@@ -46,7 +46,7 @@ const ReactUIWalletModalProviderDynamic = dynamic(
 
 
 enum ChainVm {
-  ethereum = "Etheruem",
+  ethereum = "Ethereum",
   solana = "Solana",
 }
 
