@@ -12,6 +12,7 @@ import dynamic from "next/dynamic";
 import { clusterApiUrl } from '@solana/web3.js';
 import { InjectedConnector } from "@web3-react/injected-connector";
 import { useWeb3React } from '@web3-react/core'
+import { ethers } from 'ethers';
 // Default styles that can be overridden by your app
 require('@solana/wallet-adapter-react-ui/styles.css');
 
@@ -108,7 +109,7 @@ export const FaucetForm = (props: FaucetFormProps) => {
   const [error, setError] = useState<string | null>(null)
   const [signature, setSignature] = useState<string | null>(null)
   const { connection } = useConnection();
-  const { publicKey, sendTransaction } = useWallet();
+  // const { publicKey, sendTransaction } = useWallet();
 
   const solanaRpcBody = (amount: number, address: string) => (
     JSON.stringify({
@@ -128,18 +129,21 @@ export const FaucetForm = (props: FaucetFormProps) => {
 
 
   useEffect(() => {
-    if (publicKey !== null) {
-      setAddress(publicKey.toString());
+    if (account) {
+      setAddress(account);
     }
-  }, [publicKey]);
+  }, [account]);
 
   const onSend = useCallback(async () => {
+    if(Number(amount) <= 0 || !ethers.utils.isAddress(address)){
+      return;
+    }
     const faucet = `${faucetUrl}`
 
     setSending(true)
     setError(null)
     // @ts-ignore
-    const body = vm === ChainVm.solana ? solanaRpcBody(Number(amount), address) : neonEvmBody(Number(amount), account)
+    const body = vm === ChainVm.solana ? solanaRpcBody(Number(amount), address) : neonEvmBody(Number(amount), address)
     const res = await fetch(faucet, {
       method: 'POST',
       headers: {
@@ -180,7 +184,7 @@ export const FaucetForm = (props: FaucetFormProps) => {
       <label htmlFor="input-address" className="form-label">{vm} Wallet Address</label>
       <input
         id="input-address"
-        value={account || ''}
+        value={address || ''}
         onChange={(e) => setAddress(e.target.value)}
         placeholder="address"
         type="text"
@@ -245,7 +249,7 @@ const Home: NextPage = () => {
 
 
     const Injected = new InjectedConnector({
-      supportedChainIds: [1, 91002]
+      // supportedChainIds: [1, 91002]
     });
 
     const handleConnect = async () => {
@@ -278,28 +282,28 @@ const Home: NextPage = () => {
   return (
     <div>
       <Head>
-        <title>Eclipse Testnet Faucets</title>
-        <meta name="twitter:card" content="summary_large_image" />
+        <title>Triton Faucet</title>
+        <link rel="shortcut icon" href="/favicon.ico" />
+        {/* <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:image" content={`${SELF_URL}/eclipse_twitter_card.jpg`} />
         <meta name="twitter:title" content="Nautilus Triton Testnet Faucet" />
         <meta
           name="twitter:description"
           content="The Eclipse testnet faucet is a client tool that allows anyone to easily request a nominal amount of Eclipse assets for testing purposes."
-        />
-
-        <meta property="og:title" content="Eclipse Testnet Faucet" />
+        /> */}
+        {/* <meta property="og:title" content="Eclipse Testnet Faucet" />
         <meta
           property="og:description"
           content="The Eclipse testnet faucet is a client tool that allows anyone to easily request a nominal amount of Eclipse assets for testing purposes."
         />
-        <meta property="og:image" content={`${SELF_URL}/eclipse_twitter_card.jpg`} />
+        <meta property="og:image" content={`${SELF_URL}/eclipse_twitter_card.jpg`} /> */}
       </Head>
-      <div className="container">
+      <div className="container" style={{marginLeft: 'auto', marginRight: 'auto'}}>
         <div className="icon">
-          <Image alt="Eclipse logo" src="/icon.svg" height={90} width={90} />
+          <Image alt="Triton logo" src="/icon.png" height={90} width={90} />
         </div>
 
-        <div className="subhead">Eclipse</div>
+        <div className="subhead">Triton Faucet</div>
         <div>
           <div className="form-content">
             <div className="title">
