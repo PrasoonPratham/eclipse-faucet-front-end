@@ -3,6 +3,7 @@ import { Transition } from '@headlessui/react'
 import ReCAPTCHA from 'react-google-recaptcha'
 import { useState } from 'react'
 
+
 const timeline = [
   {
     id: 1,
@@ -44,11 +45,12 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
 
+
 export default function Example() {
   const [visibleSections, setVisibleSections] = useState(1)
   const [isCaptchaSolved, setIsCaptchaSolved] = useState(false)
 
-  const onCaptchaChange = (value: boolean) => {
+  const onCaptchaChange = (value: string) => {
     if (value) {
       setIsCaptchaSolved(true)
     } else {
@@ -63,6 +65,7 @@ export default function Example() {
   const resetTimeline = () => {
     setVisibleSections(1)
   }
+  
 
 return (
   <div className="text-white p-12 rounded-lg shadow-lg bg-gray-500/25 md:mx-32 lg:mx-8 xl:mx-72">
@@ -108,7 +111,7 @@ return (
                 </div>
                 {eventIdx === 0 && (
                   <div className="flex justify-center mt-2">
-                    <ReCAPTCHA sitekey="your-recaptcha-site-key" onChange={onCaptchaChange} />
+                    <ReCAPTCHA sitekey="6LfnN6MlAAAAAGQ_leBCpZkzcX8MFFQO_5U-Iqqp" onChange={onCaptchaChange} />
                   </div>
                 )}
                 {eventIdx === visibleSections - 1 && eventIdx !== timeline.length - 1 && (
@@ -143,3 +146,7 @@ return (
 
 
 }
+function setIsCaptchaSolved(arg0: boolean) {
+  throw new Error('Function not implemented.')
+}
+
