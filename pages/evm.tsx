@@ -7,15 +7,13 @@ import React from 'react';
 import { Web3ReactProvider } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 import { ConnectWalletButton } from './components/ConnectWalletButton';
+import { AddNetworkButton } from './components/AddNetwork';
 
 function getLibrary(provider: any): Web3Provider {
   const library = new Web3Provider(provider);
   library.pollingInterval = 12000;
   return library;
 }
-
-
-
 
 const timeline = [
   {
@@ -73,7 +71,8 @@ export default function Example() {
 
 // Update the handleButtonClick function to check if the wallet is connected before proceeding to the next section
 const handleButtonClick = (eventIdx: number) => {
-  if (eventIdx === 0 || (eventIdx === 1 && isWalletConnected)) {
+  // Update this condition to allow moving to the next step for Nautilus EVM section
+  if (eventIdx === 0 || (eventIdx === 1 && isWalletConnected) || eventIdx > 1) {
     setVisibleSections(eventIdx + 2);
   }
 };
@@ -156,6 +155,13 @@ const handleWalletConnected = () => {
                   </div>
                 )}
 
+                {
+                  eventIdx === 2 && (
+                    <div className="flex justify-center mt-2">
+                      <AddNetworkButton>{"Add/Switch Network"}</AddNetworkButton>
+                    </div>
+                  )}
+                
                 {eventIdx === visibleSections - 1 && eventIdx !== timeline.length - 1 && (
                   <div className="flex justify-center">
                     <button

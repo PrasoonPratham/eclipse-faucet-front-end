@@ -19,7 +19,7 @@ export const injectedConnector = new InjectedConnector({
   ],
 });
 
-export const ConnectWalletButton: React.FC<Props> = ({ children, onConnected }) => {
+const ConnectWalletButton: React.FC<Props> = ({ children, onConnected }) => {
   const { activate, active, error } = useWeb3React();
 
   const onClick = async () => {
@@ -46,3 +46,5 @@ export const ConnectWalletButton: React.FC<Props> = ({ children, onConnected }) 
     </button>
   );
 };
+
+export { ConnectWalletButton };
