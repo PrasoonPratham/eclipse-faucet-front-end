@@ -1,13 +1,11 @@
 import { CheckIcon } from '@heroicons/react/20/solid'
 import { Transition } from '@headlessui/react'
 import ReCAPTCHA from 'react-google-recaptcha'
-import { useState } from 'react'
 
-import React from 'react';
-import { Web3ReactProvider } from '@web3-react/core';
-import { Web3Provider } from '@ethersproject/providers';
-import { ConnectWalletButton } from './components/ConnectWalletButton';
-import { AddNetworkButton } from './components/AddNetwork';
+import React, { useState } from "react";
+import { Web3ReactProvider, useWeb3React } from "@web3-react/core";
+import { Web3Provider } from "@ethersproject/providers";
+import { ConnectWalletButton } from "./components/ConnectWalletButton";
 
 function getLibrary(provider: any): Web3Provider {
   const library = new Web3Provider(provider);
@@ -158,7 +156,7 @@ const handleWalletConnected = () => {
                 {
                   eventIdx === 2 && (
                     <div className="flex justify-center mt-2">
-                      <AddNetworkButton>{"Add/Switch Network"}</AddNetworkButton>
+                      {/* <AddNetworkButton>{"Add/Switch Network"}</AddNetworkButton> */}
                     </div>
                   )}
                 
