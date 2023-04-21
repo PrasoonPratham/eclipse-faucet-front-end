@@ -63,7 +63,7 @@ export default function Example() {
   const [visibleSections, setVisibleSections] = useState(1)
   const [isCaptchaSolved, setIsCaptchaSolved] = useState(false)
 
-  const onCaptchaChange = (value: string) => {
+  const onCaptchaChange = (value: string | null) => {
     if (value) {
       setIsCaptchaSolved(true)
     } else {
