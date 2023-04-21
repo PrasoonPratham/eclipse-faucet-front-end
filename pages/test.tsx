@@ -3,6 +3,20 @@ import { Transition } from '@headlessui/react'
 import ReCAPTCHA from 'react-google-recaptcha'
 import { useState } from 'react'
 
+import React from 'react';
+import { Web3ReactProvider } from '@web3-react/core';
+import { Web3Provider } from '@ethersproject/providers';
+import { ConnectWalletButton } from './components/ConnectWalletButton';
+import { useWalletActive } from './components/ConnectWalletButton';
+
+function getLibrary(provider: any): Web3Provider {
+  const library = new Web3Provider(provider);
+  library.pollingInterval = 12000;
+  return library;
+}
+
+
+
 
 const timeline = [
   {
@@ -17,21 +31,21 @@ const timeline = [
     content: 'Connect wallet.',
     target: ' Connect to Metamask, backpack or any other Ethereum wallet',
     href: '#',
-    message: 'Connect your wallet',
+    message: 'Next Step',
   },
   {
     id: 3,
     content: 'Connect Nautilus EVM.',
     target: 'Add the nautilus chain to your wallet',
     href: '#',
-    message: 'Add Chain',
+    message: 'Next Step',
   },
   {
     id: 4,
     content: 'Airdrop testnet tokens.',
     target: 'Receive testnet tokens to your wallet',
     href: '#',
-    message: 'Airdrop',
+    message: 'Next Step',
   },
   {
     id: 5,
@@ -58,17 +72,35 @@ export default function Example() {
     }
   }
 
-  const handleButtonClick = (eventIdx: number) => {
-    setVisibleSections(eventIdx + 2)
+// Update the handleButtonClick function to check if the wallet is connected before proceeding to the next section
+const handleButtonClick = (eventIdx: number) => {
+  if (eventIdx === 0 || (eventIdx === 1 && isWalletConnected)) {
+    setVisibleSections(eventIdx + 2);
   }
+};
 
   const resetTimeline = () => {
     setVisibleSections(1)
   }
-  
 
-return (
-  <div className="text-white p-12 rounded-lg shadow-lg bg-gray-500/25 md:mx-32 lg:mx-8 xl:mx-72">
+// Add the handleWalletConnected callback function
+const handleWalletConnected = () => {
+  setIsWalletConnected(true);
+};
+
+  const [isWalletConnected, setIsWalletConnected] = useState(false);
+  
+  
+  return (
+    <div>
+      <div className="border-b border-gray-200 pb-5 md:mx-32 lg:mx-8 xl:mx-72 my-10">
+      <h3 className="text-2xl font-semibold leading-6 text-white-900">Eclipse EVM Faucet</h3>
+      <p className="mt-2 max-w-4xl text-sm text-gray-200">
+        Get testnet tokens to your wallet for any of the Eclipse EVM chains!
+      </p>
+      </div>
+      
+    <div className="text-white p-12 rounded-lg shadow-lg bg-slate-500/25 md:mx-32 lg:mx-8 xl:mx-72">
     <div className="flow-root">
       <ul role="list" className="-mb-8">
         {timeline.map((event, eventIdx) => (
@@ -109,11 +141,22 @@ return (
                     </div>
                   </div>
                 </div>
+
                 {eventIdx === 0 && (
                   <div className="flex justify-center mt-2">
                     <ReCAPTCHA sitekey="6LfnN6MlAAAAAGQ_leBCpZkzcX8MFFQO_5U-Iqqp" onChange={onCaptchaChange} />
                   </div>
                 )}
+                {eventIdx === 1 && (
+                  <div className="flex justify-center mt-2">
+                        <Web3ReactProvider getLibrary={getLibrary}>
+      <div>
+        <ConnectWalletButton onConnected={handleWalletConnected}>Connect Wallet</ConnectWalletButton>
+      </div>
+    </Web3ReactProvider>
+                  </div>
+                )}
+
                 {eventIdx === visibleSections - 1 && eventIdx !== timeline.length - 1 && (
                   <div className="flex justify-center">
                     <button
@@ -141,6 +184,7 @@ return (
         </div>
       )}
     </div>
+      </div>
   </div>
 )
 
