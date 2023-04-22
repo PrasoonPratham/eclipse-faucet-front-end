@@ -1,7 +1,6 @@
 import { CheckIcon } from '@heroicons/react/20/solid'
 import { Transition } from '@headlessui/react'
 import ReCAPTCHA from 'react-google-recaptcha'
-import { IBM_Plex_Mono } from '@next/font/google'
 
 import React, { useState } from 'react'
 import { Web3ReactProvider, useWeb3React } from '@web3-react/core'
@@ -13,12 +12,6 @@ function getLibrary(provider: any): Web3Provider {
   library.pollingInterval = 12000
   return library
 }
-
-const IBM_Mono = IBM_Plex_Mono({
-  subsets: ['latin'],
-  weight: '400',
-  variable: '--font-IBM-Mono'
-})
 
 const timeline = [
   {
@@ -93,17 +86,17 @@ export default function Example() {
   const [isWalletConnected, setIsWalletConnected] = useState(false)
 
   return (
-    <div className={'bg-black h-screen p-5 ' + `${IBM_Mono.variable}`}>
-      <div className="border-b border-gray-200 pb-5 md:mx-32 lg:mx-8 xl:mx-72 py-10 mb-10">
-        <h2 className="text-3xl font-semibold leading-6 text-white font">Eclipse EVM Faucet</h2>
-        <p className="pt-2 max-w-4xl text-md text-gray-200">
+    <div className="bg-black h-screen p-5">
+      <div className="border-b border-gray-200 pb-5 md:mx-32 lg:mx-8 xl:mx-72 my-10">
+        <h3 className="text-2xl text-gray-200 font-semibold leading-6 text-white-900">Eclipse EVM Faucet</h3>
+        <p className="mt-2 max-w-4xl text-sm text-gray-200">
           Get testnet tokens to your wallet for any of the Eclipse EVM chains!
         </p>
       </div>
 
-      <div className="text-white p-12 rounded-lg shadow-lg bg-slate-500/25 md:mx-32 lg:mx-8 xl:mx-72 Inter">
+      <div className="text-white p-12 rounded-lg shadow-lg bg-slate-500/25 md:mx-32 lg:mx-8 xl:mx-72">
         <div className="flow-root">
-          <ul role="list" className="-mb-8 ">
+          <ul role="list" className="-mb-8">
             {timeline.map((event, eventIdx) => (
               <Transition
                 key={event.id}
