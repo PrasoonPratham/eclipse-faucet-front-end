@@ -8,6 +8,8 @@ import Banner  from './components/Banner';
 import ConnectWalletButton from './components/ConnectWalletButton';
 import { AddNetworkButton } from './components/AddNetworkButton';
 
+
+
 function getLibrary(provider: any): Web3Provider {
   const library = new Web3Provider(provider)
   library.pollingInterval = 12000
@@ -146,9 +148,27 @@ const resetTimeline = () => {
                     </div>
 
                     {eventIdx === 0 && (
-                      <div className="flex justify-center mt-2">
-                        <ReCAPTCHA sitekey="6LfnN6MlAAAAAGQ_leBCpZkzcX8MFFQO_5U-Iqqp" onChange={onCaptchaChange} />
-                      </div>
+                      <div className="w-full flex justify-center mt-2">
+  <div className="relative ">
+     <div className="md:hidden">
+        <ReCAPTCHA
+          sitekey="6LfnN6MlAAAAAGQ_leBCpZkzcX8MFFQO_5U-Iqqp"
+          onChange={onCaptchaChange}
+          className="scale-50"
+        />
+      </div>
+
+      {/* Desktop and Tablet ReCAPTCHA */}
+      <div className="hidden md:block">
+        <ReCAPTCHA
+          sitekey="6LfnN6MlAAAAAGQ_leBCpZkzcX8MFFQO_5U-Iqqp"
+          onChange={onCaptchaChange}
+        />
+      </div>
+  </div>
+</div>
+
+
                     )}
 
                     {eventIdx === 1 && (
