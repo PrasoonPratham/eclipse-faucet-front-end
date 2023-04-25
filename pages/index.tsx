@@ -6,6 +6,7 @@ import { Transition } from '@headlessui/react';
 import { CheckIcon } from '@heroicons/react/20/solid';
 import Banner  from './components/Banner';
 import ConnectWalletButton from './components/ConnectWalletButton';
+import { AddNetworkButton } from './components/AddNetworkButton';
 
 function getLibrary(provider: any): Web3Provider {
   const library = new Web3Provider(provider)
@@ -63,14 +64,13 @@ export default function Faucet() {
 
   // Update the handleButtonClick function to check if the wallet is connected before proceeding to the next section
 const handleButtonClick = (eventIdx: number) => {
-  // Update this condition to allow moving to the next step for Nautilus EVM section
   if (
-    (eventIdx === 0 || (eventIdx === 1 && isWalletConnected) || eventIdx > 1) &&
+    (eventIdx === 0 || (eventIdx === 1 && isWalletConnected) || (eventIdx === 2 && isNautilusConnected) || eventIdx > 2) &&
     !isConnecting
   ) {
-    setVisibleSections(eventIdx + 2)
+    setVisibleSections(eventIdx + 2);
   }
-}
+};
 
 
 const resetTimeline = () => {
@@ -93,6 +93,8 @@ const resetTimeline = () => {
     }, [isWalletConnected]);
   
   const [isConnecting, setIsConnecting] = useState(false)
+  const [isNautilusConnected, setIsNautilusConnected] = useState(false);
+
 
   return (<div>
     <Banner text={"Eclipse x Injective Hackathon is live!"} linkToTarget="https://www.youtube.com/watch?v=zQIZ0EsJ2s4&ab_channel=Injective"/>
@@ -165,10 +167,11 @@ const resetTimeline = () => {
                     )}
 
                     {eventIdx === 2 && (
-                      <div className="flex justify-center mt-2">
-                        {/* <AddNetworkButton>{"Add/Switch Network"}</AddNetworkButton> */}
-                      </div>
-                    )}
+  <div className="flex justify-center mt-2">
+    <AddNetworkButton setIsNautilusConnected={setIsNautilusConnected}>{"Switch Network"}</AddNetworkButton>
+  </div>
+)}
+
 
                     {eventIdx === visibleSections - 1 && eventIdx !== timeline.length - 1 && eventIdx !== 1 && (
   <div className="flex justify-center">
