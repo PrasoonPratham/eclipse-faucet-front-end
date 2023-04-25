@@ -1,7 +1,7 @@
 import { CheckIcon } from '@heroicons/react/20/solid'
 import { Transition } from '@headlessui/react'
 import ReCAPTCHA from 'react-google-recaptcha'
-
+import Banner from "./components/Banner";
 import React, { useEffect, useState } from 'react'
 import { Web3ReactProvider } from '@web3-react/core'
 import { Web3Provider } from '@ethersproject/providers'
@@ -18,35 +18,30 @@ const timeline = [
     id: 1,
     content: 'Complete Catcha.',
     target: 'Verify your identity',
-    href: '#',
     message: 'Complete Captcha',
   },
   {
     id: 2,
     content: 'Connect wallet.',
     target: ' Connect to Metamask, backpack or any other Ethereum wallet',
-    href: '#',
     message: 'Next Step',
   },
   {
     id: 3,
     content: 'Connect Nautilus EVM.',
     target: 'Add the nautilus chain to your wallet',
-    href: '#',
     message: 'Next Step',
   },
   {
     id: 4,
     content: 'Airdrop testnet tokens.',
     target: 'Receive testnet tokens to your wallet',
-    href: '#',
     message: 'Next Step',
   },
   {
     id: 5,
     content: 'Done!',
     target: 'Your wallet has been funded with testnet tokens',
-    href: '#',
   },
 ]
 
@@ -99,7 +94,8 @@ const resetTimeline = () => {
   
   const [isConnecting, setIsConnecting] = useState(false)
 
-  return (
+  return (<div>
+    <Banner Text={"Eclipse x Injective Hackathon is live!"} LinkToTarget="https://www.youtube.com/watch?v=zQIZ0EsJ2s4&ab_channel=Injective"/>
     <div className="bg-black h-screen p-5">
       <div className="border-b border-gray-200 pb-5 md:mx-32 lg:mx-8 xl:mx-72 my-10">
         <h3 className="text-2xl text-gray-200 font-semibold leading-6 text-white-900">Eclipse EVM Faucet</h3>
@@ -142,9 +138,6 @@ const resetTimeline = () => {
                         <div>
                           <p className="text-sm">
                             {event.content}{' '}
-                            <a href={event.href} className="font-medium underline">
-                              {event.target}
-                            </a>
                           </p>
                         </div>
                       </div>
@@ -207,6 +200,7 @@ const resetTimeline = () => {
           )}
         </div>
       </div>
+    </div>
     </div>
   )
 }
