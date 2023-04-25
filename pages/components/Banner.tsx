@@ -1,6 +1,5 @@
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
-import Link from "next/link";
 
 interface BannerProps {
   text: string;
@@ -25,14 +24,17 @@ const Banner: React.FC<BannerProps> = ({ text, linkToTarget }) => {
       <div className="mx-auto max-w-7xl py-3 px-3 sm:px-6 lg:px-8">
         <div className="pr-16 sm:px-16 sm:text-center">
           <p className="font-medium text-white">
-            <span className=" md:inline">{text}</span>
+            <span className="md:inline">{text}</span>
             <span className="block sm:ml-2 sm:inline-block">
-              <Link href={linkToTarget} passHref>
-                <a className="font-bold text-white underline" target="_blank" rel="noopener noreferrer">
-                  Learn more
-                  <span aria-hidden="true"> &rarr;</span>
-                </a>
-              </Link>
+              <a
+                href={linkToTarget}
+                className="font-bold text-white underline"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Learn more
+                <span aria-hidden="true"> &rarr;</span>
+              </a>
             </span>
           </p>
         </div>
