@@ -66,7 +66,7 @@ useEffect(() => {
 }, [setIsNautilusConnected]);
 
 
-  const buttonText = connectedChain ? `${connectedChain} Connected` : children;
+  const buttonText = connectedChain ? `${connectedChain}` : children;
 
   return (
     <button

@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Web3ReactProvider } from '@web3-react/core';
+import { Web3ReactProvider, useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 import ReCAPTCHA from 'react-google-recaptcha';
 import { Transition } from '@headlessui/react';
-import { CheckIcon } from '@heroicons/react/20/solid';
+import { CheckIcon, ArrowPathIcon, ArrowDownIcon } from '@heroicons/react/20/solid';
 import Banner  from './components/Banner';
 import ConnectWalletButton from './components/ConnectWalletButton';
 import { AddNetworkButton } from './components/AddNetworkButton';
+
 
 
 
@@ -20,31 +21,26 @@ const timeline = [
   {
     id: 1,
     content: 'Complete Catcha.',
-    target: 'Verify your identity',
     message: 'Complete Captcha',
   },
   {
     id: 2,
     content: 'Connect wallet.',
-    target: ' Connect to Metamask, backpack or any other Ethereum wallet',
     message: 'Next Step',
   },
   {
     id: 3,
     content: 'Connect Nautilus EVM.',
-    target: 'Add the nautilus chain to your wallet',
     message: 'Next Step',
   },
   {
     id: 4,
-    content: 'Airdrop testnet tokens.',
-    target: 'Receive testnet tokens to your wallet',
+    content: 'Airdrop 10 testnet tokens.',
     message: 'Next Step',
   },
   {
     id: 5,
     content: 'Done!',
-    target: 'Your wallet has been funded with testnet tokens',
   },
 ]
 
@@ -56,6 +52,54 @@ export default function Faucet() {
   const [visibleSections, setVisibleSections] = useState(1)
   const [isCaptchaSolved, setIsCaptchaSolved] = useState(false)
 
+  const { account } = useWeb3React();
+  const [isAirdropRequested, setIsAirdropRequested] = useState(false);
+
+const requestAirdrop = async (address: string, amount: number): Promise<boolean> => {
+  try {
+    const url = 'https://faucet.evm.zebec.eclipsenetwork.xyz/request_neon';
+    const headers = {
+      'Content-Type': 'application/json',
+    };
+    const body = JSON.stringify({
+      wallet: address,
+      amount: amount,
+    });
+
+    console.log('Sending request to:', url);
+    console.log('Request headers:', headers);
+    console.log('Request body:', body);
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: headers,
+      body: body,
+    });
+
+    console.log('Response:', response);
+
+    if (!response.ok) {
+      console.error('Error requesting airdrop', response);
+      return false;
+    }
+
+    const data = await response.json();
+    if (data.success) {
+      console.log('Airdrop successful', data);
+      return true;
+    } else {
+      console.error('Airdrop failed', data);
+      return false;
+    }
+  } catch (error) {
+    console.error('Error requesting airdrop', error);
+    return false;
+  }
+};
+
+
+
+
   const onCaptchaChange = (value: string | null) => {
     if (value) {
       setIsCaptchaSolved(true)
@@ -65,14 +109,24 @@ export default function Faucet() {
   }
 
   // Update the handleButtonClick function to check if the wallet is connected before proceeding to the next section
-const handleButtonClick = (eventIdx: number) => {
+const handleButtonClick = async (eventIdx: number) => {
   if (
     (eventIdx === 0 || (eventIdx === 1 && isWalletConnected) || (eventIdx === 2 && isNautilusConnected) || eventIdx > 2) &&
     !isConnecting
   ) {
-    setVisibleSections(eventIdx + 2);
+    if (eventIdx === 2 && isNautilusConnected && isCaptchaSolved && account) {
+      const airdropSuccess = await requestAirdrop(account, 10);
+      setIsAirdropRequested(airdropSuccess);
+      if (airdropSuccess) {
+        setVisibleSections(5);
+      }
+    } else {
+      setVisibleSections(eventIdx + 2);
+    }
   }
 };
+
+
 
 
 const resetTimeline = () => {
@@ -192,19 +246,31 @@ const resetTimeline = () => {
 )}
 
 
-                   {eventIdx === visibleSections - 1 && eventIdx !== timeline.length - 1 && eventIdx !== 1 && (
-  <div className="flex justify-center">
-    <button
-      onClick={() => handleButtonClick(eventIdx)}
-      disabled={!isCaptchaSolved && eventIdx === 0}
-      className={`inline-flex items-center my-3 px-3 py-1.5 border border-transparent text-sm font-medium rounded shadow-sm text-white ${
-        isCaptchaSolved && eventIdx === 0 ? "bg-green-500 hover:bg-green-600" : "bg-blue-500 hover:bg-blue-600"
-      } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 mt-4 mb-2`}
-    >
-      {event.message}
-    </button>
-  </div>
-)}
+              {
+  eventIdx === visibleSections - 1 &&
+  eventIdx !== timeline.length - 1 &&
+  eventIdx !== 1 && (
+    <div className="flex justify-center">
+      <button
+        onClick={() => handleButtonClick(eventIdx)}
+        disabled={(!isCaptchaSolved && eventIdx === 0) || (eventIdx === 3 && !isNautilusConnected)}
+        className={`inline-flex items-center my-3 px-3 py-1.5 border border-transparent text-sm font-medium rounded shadow-sm text-white ${
+          isAirdropRequested && eventIdx === 3
+            ? "bg-green-500 hover:bg-green-600"
+            : "bg-blue-500 hover:bg-blue-600"
+        } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 mt-4 mb-2`}
+      >
+        {isAirdropRequested && eventIdx === 3 ? (
+          <CheckIcon className="h-5 w-5" aria-hidden="true" />
+        ) : (
+          <ArrowDownIcon className="h-5 w-5" aria-hidden="true" />
+        )}
+        <span className="ml-2">{event.message}</span>
+      </button>
+    </div>
+  )
+}
+   
 
 
 
@@ -215,10 +281,12 @@ const resetTimeline = () => {
           </ul>
           {visibleSections === timeline.length && (
             <div className="flex justify-center -my-6">
+              
               <button
                 onClick={resetTimeline}
                 className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 mt-4 mb-2"
               >
+                <ArrowPathIcon className="h-5 w-5" aria-hidden="true" />
                 Start Again
               </button>
             </div>
