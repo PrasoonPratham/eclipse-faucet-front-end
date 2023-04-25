@@ -54,7 +54,7 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
 
-export default function Example() {
+export default function Faucet() {
   const [visibleSections, setVisibleSections] = useState(1)
   const [isCaptchaSolved, setIsCaptchaSolved] = useState(false)
 
@@ -78,9 +78,11 @@ const handleButtonClick = (eventIdx: number) => {
 }
 
 
-  const resetTimeline = () => {
-    setVisibleSections(1)
-  }
+const resetTimeline = () => {
+  setVisibleSections(1);
+  setIsWalletConnected(false); // Add this line to reset the wallet connection state
+}
+
 
   // Add the handleWalletConnected callback function
   const handleWalletConnected = () => {
@@ -175,17 +177,18 @@ const handleButtonClick = (eventIdx: number) => {
                       </div>
                     )}
 
-                    {eventIdx === visibleSections - 1 && eventIdx !== timeline.length - 1 && (
-                      <div className="flex justify-center">
-                        <button
-                          onClick={() => handleButtonClick(eventIdx)}
-                          disabled={!isCaptchaSolved && eventIdx === 0}
-                          className="inline-flex items-center my-3 px-3 py-1.5 border border-transparent text-sm font-medium rounded shadow-sm text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 mt-4 mb-2"
-                        >
-                          {event.message}
-                        </button>
-                      </div>
-                    )}
+                    {eventIdx === visibleSections - 1 && eventIdx !== timeline.length - 1 && eventIdx !== 1 && (
+  <div className="flex justify-center">
+    <button
+      onClick={() => handleButtonClick(eventIdx)}
+      disabled={!isCaptchaSolved && eventIdx === 0}
+      className="inline-flex items-center my-3 px-3 py-1.5 border border-transparent text-sm font-medium rounded shadow-sm text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 mt-4 mb-2"
+    >
+      {event.message}
+    </button>
+  </div>
+)}
+
 
                   </div>
                 </li>
