@@ -5,9 +5,10 @@ import { InjectedConnector } from '@web3-react/injected-connector'
 interface Props {
   children: React.ReactNode
   onConnected?: () => void // Callback when wallet is connected
+  onConnecting?: (connecting: boolean) => void // Callback when wallet is connecting
+  isConnected: boolean
+  isConnecting: boolean
 }
-
-export const useWalletActive = () => useWeb3React().active
 
 export const injectedConnector = new InjectedConnector({
   supportedChainIds: [
@@ -19,10 +20,19 @@ export const injectedConnector = new InjectedConnector({
   ],
 })
 
-const ConnectWalletButton: React.FC<Props> = ({ children, onConnected }) => {
-  const { activate, active, error } = useWeb3React()
+const ConnectWalletButton: React.FC<Props> = ({
+  children,
+  onConnected,
+  onConnecting,
+  isConnected,
+  isConnecting,
+}) => {
+  const { activate, error } = useWeb3React()
 
   const onClick = async () => {
+    if (onConnecting) {
+      onConnecting(true)
+    }
     try {
       await activate(injectedConnector)
       if (onConnected) {
@@ -30,18 +40,22 @@ const ConnectWalletButton: React.FC<Props> = ({ children, onConnected }) => {
       }
     } catch (error) {
       console.error('Failed to connect wallet:', error)
+    } finally {
+      if (onConnecting) {
+        onConnecting(false)
+      }
     }
   }
 
   const buttonClass = `inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 mt-4 mb-2 ${
-    active
+    isConnected
       ? 'text-white bg-green-500 hover:bg-green-600 focus:ring-green-500'
       : 'text-white bg-blue-500 hover:bg-blue-600 focus:ring-blue-500'
   }`
 
   return (
-    <button onClick={onClick} disabled={!!error} className={buttonClass}>
-      {active ? 'Connected' : children}
+    <button onClick={onClick} disabled={!!error || isConnecting} className={buttonClass}>
+      {isConnected ? 'Connected' : children}
     </button>
   )
 }
