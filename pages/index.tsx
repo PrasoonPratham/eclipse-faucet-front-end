@@ -1,11 +1,11 @@
-import { CheckIcon } from '@heroicons/react/20/solid'
-import { Transition } from '@headlessui/react'
-import ReCAPTCHA from 'react-google-recaptcha'
-import Banner from "./components/Banner";
-import React, { useEffect, useState } from 'react'
-import { Web3ReactProvider } from '@web3-react/core'
-import { Web3Provider } from '@ethersproject/providers'
-import { ConnectWalletButton } from './components/ConnectWalletButton'
+import React, { useEffect, useState } from 'react';
+import { Web3ReactProvider } from '@web3-react/core';
+import { Web3Provider } from '@ethersproject/providers';
+import ReCAPTCHA from 'react-google-recaptcha';
+import { Transition } from '@headlessui/react';
+import { CheckIcon } from '@heroicons/react/20/solid';
+import Banner  from './components/Banner';
+import ConnectWalletButton from './components/ConnectWalletButton';
 
 function getLibrary(provider: any): Web3Provider {
   const library = new Web3Provider(provider)
@@ -95,7 +95,7 @@ const resetTimeline = () => {
   const [isConnecting, setIsConnecting] = useState(false)
 
   return (<div>
-    <Banner Text={"Eclipse x Injective Hackathon is live!"} LinkToTarget="https://www.youtube.com/watch?v=zQIZ0EsJ2s4&ab_channel=Injective"/>
+    <Banner text={"Eclipse x Injective Hackathon is live!"} linkToTarget="https://www.youtube.com/watch?v=zQIZ0EsJ2s4&ab_channel=Injective"/>
     <div className="bg-black h-screen p-5">
       <div className="border-b border-gray-200 pb-5 md:mx-32 lg:mx-8 xl:mx-72 my-10">
         <h3 className="text-2xl text-gray-200 font-semibold leading-6 text-white-900">Eclipse EVM Faucet</h3>

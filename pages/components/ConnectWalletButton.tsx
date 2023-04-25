@@ -60,4 +60,4 @@ const ConnectWalletButton: React.FC<Props> = ({
   )
 }
 
-export { ConnectWalletButton }
+export default ConnectWalletButton
