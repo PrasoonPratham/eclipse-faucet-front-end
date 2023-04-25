@@ -147,10 +147,10 @@ const resetTimeline = () => {
                       </div>
                     </div>
 
-                    {eventIdx === 0 && (
-                      <div className="w-full flex justify-center mt-2">
-  <div className="relative ">
-     <div className="md:hidden">
+                    {eventIdx === 0 && !isCaptchaSolved && (
+  <div className="w-full flex justify-center mt-2">
+    <div className="relative ">
+      <div className="md:hidden">
         <ReCAPTCHA
           sitekey="6LfnN6MlAAAAAGQ_leBCpZkzcX8MFFQO_5U-Iqqp"
           onChange={onCaptchaChange}
@@ -165,11 +165,10 @@ const resetTimeline = () => {
           onChange={onCaptchaChange}
         />
       </div>
+    </div>
   </div>
-</div>
+)}
 
-
-                    )}
 
                     {eventIdx === 1 && (
                       <div className="flex justify-center mt-2">
@@ -193,17 +192,20 @@ const resetTimeline = () => {
 )}
 
 
-                    {eventIdx === visibleSections - 1 && eventIdx !== timeline.length - 1 && eventIdx !== 1 && (
+                   {eventIdx === visibleSections - 1 && eventIdx !== timeline.length - 1 && eventIdx !== 1 && (
   <div className="flex justify-center">
     <button
       onClick={() => handleButtonClick(eventIdx)}
       disabled={!isCaptchaSolved && eventIdx === 0}
-      className="inline-flex items-center my-3 px-3 py-1.5 border border-transparent text-sm font-medium rounded shadow-sm text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 mt-4 mb-2"
+      className={`inline-flex items-center my-3 px-3 py-1.5 border border-transparent text-sm font-medium rounded shadow-sm text-white ${
+        isCaptchaSolved && eventIdx === 0 ? "bg-green-500 hover:bg-green-600" : "bg-blue-500 hover:bg-blue-600"
+      } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 mt-4 mb-2`}
     >
       {event.message}
     </button>
   </div>
 )}
+
 
 
                   </div>

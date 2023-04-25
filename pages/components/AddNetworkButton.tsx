@@ -63,7 +63,7 @@ useEffect(() => {
       }
     };
   }
-}, []);
+}, [setIsNautilusConnected]);
 
 
   const buttonText = connectedChain ? `${connectedChain} Connected` : children;
@@ -79,3 +79,6 @@ useEffect(() => {
     </button>
   );
 };
+
+
+export default AddNetworkButton;

@@ -27,7 +27,7 @@ const Banner: React.FC<BannerProps> = ({ text, linkToTarget }) => {
           <p className="font-medium text-white">
             <span className=" md:inline">{text}</span>
             <span className="block sm:ml-2 sm:inline-block">
-              <Link href={linkToTarget} passHref legacyBehavior>
+              <Link href={linkToTarget} passHref>
                 <a className="font-bold text-white underline" target="_blank" rel="noopener noreferrer">
                   Learn more
                   <span aria-hidden="true"> &rarr;</span>
