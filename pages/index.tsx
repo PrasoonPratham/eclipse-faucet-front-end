@@ -279,7 +279,7 @@ export default function Faucet() {
                   onClick={resetTimeline}
                   className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 mt-4 mb-2"
                 >
-                  <ArrowPathIcon className="h-5 w-5" aria-hidden="true" />
+                  <ArrowPathIcon className="h-5 w-5 mr-3" aria-hidden="true" />
                   Start Again
                 </button>
               </div>
