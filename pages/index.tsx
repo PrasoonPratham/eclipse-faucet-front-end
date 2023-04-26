@@ -3,7 +3,7 @@ import { Web3ReactProvider, useWeb3React } from '@web3-react/core'
 import { Web3Provider } from '@ethersproject/providers'
 import ReCAPTCHA from 'react-google-recaptcha'
 import { Transition } from '@headlessui/react'
-import { CheckIcon, ArrowPathIcon, ArrowDownIcon } from '@heroicons/react/20/solid'
+import { CheckIcon, ArrowPathIcon } from '@heroicons/react/20/solid'
 import Banner from './components/Banner'
 import ConnectWalletButton from './components/ConnectWalletButton'
 import { AddNetworkButton } from './components/AddNetworkButton'
@@ -137,7 +137,7 @@ export default function Faucet() {
       setIsCaptchaSolved(false)
     }
   }
-
+  
   // Update the handleButtonClick function to check if the wallet is connected before proceeding to the next section
   const handleButtonClick = async (eventIdx: number) => {
     if (
@@ -154,7 +154,7 @@ export default function Faucet() {
           setVisibleSections(5)
         }
       } else {
-        setVisibleSections(eventIdx + 2)
+        setVisibleSections((prevState) => prevState + 1)
       }
     }
   }
@@ -167,19 +167,23 @@ export default function Faucet() {
   // Add the handleWalletConnected callback function
   const handleWalletConnected = () => {
     setIsWalletConnected(true)
+    console.log('Wallet connected') // Add this line
   }
 
   const [isWalletConnected, setIsWalletConnected] = useState(false)
+
   useEffect(() => {
     if (isWalletConnected) {
       setVisibleSections(3)
+      console.log('Wallet connected:', isWalletConnected) // Add this line
     }
   }, [isWalletConnected])
+
+  const { account } = useWeb3React()
 
   const [isConnecting, setIsConnecting] = useState(false)
   const [isNautilusConnected, setIsNautilusConnected] = useState(false)
 
-  const { account } = useWeb3React()
   useEffect(() => {
     if (account) {
       console.log('Connected account:', account)
@@ -272,7 +276,7 @@ export default function Faucet() {
                               onConnecting={setIsConnecting}
                               onConnected={handleWalletConnected}
                             >
-                              {isWalletConnected ? 'Connect Wallet' : 'Wallet not found'}
+                              {isWalletConnected ? 'Wallet Connected' : 'Connect Wallet'}
                             </ConnectWalletButton>
                           </Web3ReactProvider>
                         </div>
@@ -296,8 +300,17 @@ export default function Faucet() {
                             <button
                               className="send inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 mt-4 mb-2"
                               type="submit"
-                              onClick={() => {
-                                console.log(account)
+                              onClick={async () => {
+                                if (account) {
+                                  const success = await requestAirdrop(account, 10)
+                                  if (success) {
+                                    console.log('Airdrop successful')
+                                  } else {
+                                    console.log('Airdrop failed')
+                                  }
+                                } else {
+                                  console.log('No connected wallet')
+                                }
                               }}
                             >
                               {'Send tokens'}
