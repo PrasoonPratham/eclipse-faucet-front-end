@@ -14,6 +14,43 @@ function getLibrary(provider: any): Web3Provider {
   return library
 }
 
+async function requestAirdrop(address: string, amount: number): Promise<boolean> {
+  try {
+    const url = 'https://faucet.evm.zebec.eclipsenetwork.xyz/request_neon'
+    const headers = {
+      'Content-Type': 'application/json',
+    }
+    const body = JSON.stringify({
+      wallet: address,
+      amount: amount,
+    })
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: headers,
+      body: body,
+    })
+
+    if (!response.ok) {
+      console.error('Error requesting airdrop', response)
+      return false
+    }
+
+    const data = await response.json()
+    if (data.success) {
+      console.log('Airdrop successful', data)
+      return true
+    } else {
+      console.error('Airdrop failed', data)
+      return false
+    }
+  } catch (error) {
+    console.error('Error requesting airdrop', error)
+    return false
+  }
+}
+
+
 const timeline = [
   {
     id: 1,
@@ -49,7 +86,6 @@ export default function Faucet() {
   const [visibleSections, setVisibleSections] = useState(1)
   const [isCaptchaSolved, setIsCaptchaSolved] = useState(false)
 
-  const { account } = useWeb3React()
   const [isAirdropRequested, setIsAirdropRequested] = useState(false)
 
   const requestAirdrop = async (address: string, amount: number): Promise<boolean> => {
@@ -142,6 +178,13 @@ export default function Faucet() {
 
   const [isConnecting, setIsConnecting] = useState(false)
   const [isNautilusConnected, setIsNautilusConnected] = useState(false)
+
+  const { account } = useWeb3React()
+  useEffect(() => {
+    if (account) {
+      console.log('Connected account:', account)
+    }
+  }, [account])
 
   return (
     <div>
@@ -242,6 +285,26 @@ export default function Faucet() {
                           </AddNetworkButton>
                         </div>
                       )}
+                      {eventIdx === 3 && (
+                        <div className="flex justify-center mt-2">
+                          <div className="form">
+                            <div className="address-display">
+                              <p>Connected wallet address:</p>
+                              <p>{account || 'No connected wallet'}</p>
+                            </div>
+
+                            <button
+                              className="send inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 mt-4 mb-2"
+                              type="submit"
+                              onClick={() => {
+                                console.log(account)
+                              }}
+                            >
+                              {'Send tokens'}
+                            </button>
+                          </div>
+                        </div>
+                      )}
 
                       {eventIdx === visibleSections - 1 && eventIdx !== timeline.length - 1 && eventIdx !== 1 && (
                         <div className="flex justify-center">
@@ -254,11 +317,6 @@ export default function Faucet() {
                                 : 'bg-blue-500 hover:bg-blue-600'
                             } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 mt-4 mb-2`}
                           >
-                            {isAirdropRequested && eventIdx === 3 ? (
-                              <CheckIcon className="h-5 w-5" aria-hidden="true" />
-                            ) : (
-                              <ArrowDownIcon className="h-5 w-5" aria-hidden="true" />
-                            )}
                             <span className="ml-2">{event.message}</span>
                           </button>
                         </div>

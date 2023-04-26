@@ -9,7 +9,7 @@ interface FaucetFormProps {
   onAirdropButtonClick: () => void
 }
 
-export const requestAirdrop = async (address: string, amount: number): Promise<boolean> => {
+ const requestAirdrop = async (address: string, amount: number): Promise<boolean> => {
   try {
     const url = 'https://faucet.evm.zebec.eclipsenetwork.xyz/request_neon'
     const headers = {

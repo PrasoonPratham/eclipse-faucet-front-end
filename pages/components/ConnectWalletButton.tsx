@@ -20,8 +20,8 @@ export const injectedConnector = new InjectedConnector({
   ],
 })
 
-const ConnectWalletButton: React.FC<Props> = ({ children, onConnected, onConnecting, isConnected, isConnecting }) => {
-  const { activate, error } = useWeb3React()
+const ConnectWalletButton: React.FC<Props> = ({ onConnected, onConnecting, isConnected, isConnecting }) => {
+  const { activate, account, error } = useWeb3React()
   const [walletNotFound, setWalletNotFound] = useState(false)
 
   useEffect(() => {
