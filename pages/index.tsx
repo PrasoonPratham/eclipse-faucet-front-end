@@ -7,8 +7,6 @@ import { CheckIcon, ArrowPathIcon, ArrowDownIcon } from '@heroicons/react/20/sol
 import Banner from './components/Banner'
 import ConnectWalletButton from './components/ConnectWalletButton'
 import { AddNetworkButton } from './components/AddNetworkButton'
-import FaucetForm, { requestAirdrop } from './components/FaucetForm'
-
 
 function getLibrary(provider: any): Web3Provider {
   const library = new Web3Provider(provider)
@@ -54,6 +52,48 @@ export default function Faucet() {
   const { account } = useWeb3React()
   const [isAirdropRequested, setIsAirdropRequested] = useState(false)
 
+  const requestAirdrop = async (address: string, amount: number): Promise<boolean> => {
+    try {
+      const url = 'https://faucet.evm.zebec.eclipsenetwork.xyz/request_neon'
+      const headers = {
+        'Content-Type': 'application/json',
+      }
+      const body = JSON.stringify({
+        wallet: address,
+        amount: amount,
+      })
+
+      console.log('Sending request to:', url)
+      console.log('Request headers:', headers)
+      console.log('Request body:', body)
+
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: headers,
+        body: body,
+      })
+
+      console.log('Response:', response)
+
+      if (!response.ok) {
+        console.error('Error requesting airdrop', response)
+        return false
+      }
+
+      const data = await response.json()
+      if (data.success) {
+        console.log('Airdrop successful', data)
+        return true
+      } else {
+        console.error('Airdrop failed', data)
+        return false
+      }
+    } catch (error) {
+      console.error('Error requesting airdrop', error)
+      return false
+    }
+  }
+
   const onCaptchaChange = (value: string | null) => {
     if (value) {
       setIsCaptchaSolved(true)
@@ -63,26 +103,25 @@ export default function Faucet() {
   }
 
   // Update the handleButtonClick function to check if the wallet is connected before proceeding to the next section
-const handleButtonClick = async (eventIdx: number) => {
-  if (
-    (eventIdx === 0 ||
-      (eventIdx === 1 && account) || // Update this condition
-      (eventIdx === 2 && isNautilusConnected) ||
-      eventIdx > 2) &&
-    !isConnecting
-  ) {
-    if (eventIdx === 2 && isNautilusConnected && isCaptchaSolved && account) {
-      const airdropSuccess = await requestAirdrop(account, 10);
-      setIsAirdropRequested(airdropSuccess);
-      if (airdropSuccess) {
-        setVisibleSections(5);
+  const handleButtonClick = async (eventIdx: number) => {
+    if (
+      (eventIdx === 0 ||
+        (eventIdx === 1 && isWalletConnected) ||
+        (eventIdx === 2 && isNautilusConnected) ||
+        eventIdx > 2) &&
+      !isConnecting
+    ) {
+      if (eventIdx === 2 && isNautilusConnected && isCaptchaSolved && account) {
+        const airdropSuccess = await requestAirdrop(account, 10)
+        setIsAirdropRequested(airdropSuccess)
+        if (airdropSuccess) {
+          setVisibleSections(5)
+        }
+      } else {
+        setVisibleSections(eventIdx + 2)
       }
-    } else {
-      setVisibleSections(eventIdx + 2);
     }
   }
-};
-
 
   const resetTimeline = () => {
     setVisibleSections(1)
@@ -100,11 +139,6 @@ const handleButtonClick = async (eventIdx: number) => {
       setVisibleSections(3)
     }
   }, [isWalletConnected])
-
-  useEffect(() => {
-  setIsWalletConnected(!!account);
-}, [account]);
-
 
   const [isConnecting, setIsConnecting] = useState(false)
   const [isNautilusConnected, setIsNautilusConnected] = useState(false)
@@ -202,26 +236,12 @@ const handleButtonClick = async (eventIdx: number) => {
                       )}
 
                       {eventIdx === 2 && (
-  <div className="flex justify-center mt-2">
-    <FaucetForm
-      account={account}
-      success={isAirdropRequested}
-      setSuccess={setIsAirdropRequested}
-      error={null}
-      setError={() => {}}
-      onAirdropButtonClick={async () => {
-        if (account) {
-          const airdropSuccess = await requestAirdrop(account, 10);
-          setIsAirdropRequested(airdropSuccess);
-          if (airdropSuccess) {
-            setVisibleSections(5);
-          }
-        }
-      }}
-    />
-  </div>
-)}
-
+                        <div className="flex justify-center mt-2">
+                          <AddNetworkButton setIsNautilusConnected={setIsNautilusConnected}>
+                            {'Switch Network'}
+                          </AddNetworkButton>
+                        </div>
+                      )}
 
                       {eventIdx === visibleSections - 1 && eventIdx !== timeline.length - 1 && eventIdx !== 1 && (
                         <div className="flex justify-center">
