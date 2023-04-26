@@ -1,15 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { Web3ReactProvider, useWeb3React } from '@web3-react/core';
-import { Web3Provider } from '@ethersproject/providers';
-import ReCAPTCHA from 'react-google-recaptcha';
-import { Transition } from '@headlessui/react';
-import { CheckIcon, ArrowPathIcon, ArrowDownIcon } from '@heroicons/react/20/solid';
-import Banner  from './components/Banner';
-import ConnectWalletButton from './components/ConnectWalletButton';
-import { AddNetworkButton } from './components/AddNetworkButton';
-
-
-
+import React, { useEffect, useState } from 'react'
+import { Web3ReactProvider, useWeb3React } from '@web3-react/core'
+import { Web3Provider } from '@ethersproject/providers'
+import ReCAPTCHA from 'react-google-recaptcha'
+import { Transition } from '@headlessui/react'
+import { CheckIcon, ArrowPathIcon, ArrowDownIcon } from '@heroicons/react/20/solid'
+import Banner from './components/Banner'
+import ConnectWalletButton from './components/ConnectWalletButton'
+import { AddNetworkButton } from './components/AddNetworkButton'
 
 function getLibrary(provider: any): Web3Provider {
   const library = new Web3Provider(provider)
@@ -43,8 +40,6 @@ const timeline = [
     content: 'Done!',
   },
 ]
-
-
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')

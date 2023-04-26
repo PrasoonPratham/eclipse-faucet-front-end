@@ -1,11 +1,15 @@
-import React, { useState, useCallback, useEffect } from 'react'
-import { ethers } from 'ethers'
+import React, { useState } from 'react'
 
-type FaucetFormProps = {
-  account?: string | null
+interface FaucetFormProps {
+  account: string | null | undefined
+  success: boolean
+  setSuccess: React.Dispatch<React.SetStateAction<boolean>>
+  error: string | null
+  setError: React.Dispatch<React.SetStateAction<string | null>>
+  onAirdropButtonClick: () => void
 }
 
-const requestAirdrop = async (address: string, amount: number): Promise<boolean> => {
+export const requestAirdrop = async (address: string, amount: number): Promise<boolean> => {
   try {
     const url = 'https://faucet.evm.zebec.eclipsenetwork.xyz/request_neon'
     const headers = {
@@ -41,54 +45,30 @@ const requestAirdrop = async (address: string, amount: number): Promise<boolean>
   }
 }
 
-const FaucetForm: React.FC<FaucetFormProps> = ({ account }) => {
-  const [address, setAddress] = useState<string>('')
-  const [amount, setAmount] = useState<number>(10)
-  const [sending, setSending] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [success, setSuccess] = useState<boolean | null>(null)
-
-  useEffect(() => {
-    if (account) {
-      setAddress(account)
-    }
-  }, [account])
-
-  const onSend = useCallback(async () => {
-    if (!ethers.utils.isAddress(address) || amount <= 0) {
-      setError('Invalid address or amount')
-      return
-    }
-
-    setSending(true)
-    setError(null)
-    setSuccess(null)
-
-    const result = await requestAirdrop(address, amount)
-
-    setSending(false)
-    if (!result) {
-      setError('Airdrop failed')
-    } else {
-      setSuccess(true)
-    }
-  }, [address, amount])
+const FaucetForm: React.FC<FaucetFormProps> = ({
+  account,
+  success,
+  setSuccess,
+  error,
+  setError,
+  onAirdropButtonClick,
+}) => {
+  console.log(account)
 
   return (
     <div className="form">
-      <label htmlFor="input-address" className="form-label">
-        Wallet Address
-      </label>
-      <input
-        id="input-address"
-        value={address || ''}
-        onChange={(e) => setAddress(e.target.value)}
-        placeholder="address"
-        type="text"
-      />
+      <div className="address-display">
+        <p>Connected wallet address:</p>
+        <p>{account || 'No connected wallet'}</p>
+      </div>
 
-      <button className="send" type="submit" onClick={onSend} disabled={sending}>
-        {sending ? 'Sending...' : 'Send'}
+      <button
+        className="send inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 mt-4 mb-2"
+        type="submit"
+        onClick={onAirdropButtonClick}
+        disabled={!account}
+      >
+        {'Send'}
       </button>
       {success && <p>Sent!</p>}
       {error && <p>{error}</p>}
