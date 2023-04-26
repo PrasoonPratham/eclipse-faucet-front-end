@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { useWeb3React } from '@web3-react/core'
 import { InjectedConnector } from '@web3-react/injected-connector'
 
@@ -20,14 +20,17 @@ export const injectedConnector = new InjectedConnector({
   ],
 })
 
-const ConnectWalletButton: React.FC<Props> = ({
-  children,
-  onConnected,
-  onConnecting,
-  isConnected,
-  isConnecting,
-}) => {
+const ConnectWalletButton: React.FC<Props> = ({ children, onConnected, onConnecting, isConnected, isConnecting }) => {
   const { activate, error } = useWeb3React()
+  const [walletNotFound, setWalletNotFound] = useState(false)
+
+  useEffect(() => {
+    if (window.ethereum) {
+      setWalletNotFound(false)
+    } else {
+      setWalletNotFound(true)
+    }
+  }, [])
 
   const onClick = async () => {
     if (onConnecting) {
@@ -50,12 +53,20 @@ const ConnectWalletButton: React.FC<Props> = ({
   const buttonClass = `inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 mt-4 mb-2 ${
     isConnected
       ? 'text-white bg-green-500 hover:bg-green-600 focus:ring-green-500'
+      : walletNotFound
+      ? 'text-white bg-red-500 hover:bg-red-600 focus:ring-red-500'
       : 'text-white bg-blue-500 hover:bg-blue-600 focus:ring-blue-500'
   }`
 
   return (
-    <button onClick={onClick} disabled={!!error || isConnecting} className={buttonClass}>
-      {isConnected ? 'Connected' : children}
+    <button onClick={onClick} disabled={walletNotFound || !!error || isConnecting} className={buttonClass}>
+      {isConnected ? (
+        <span className="text-white">Connected</span>
+      ) : walletNotFound ? (
+        'Wallet not found'
+      ) : (
+        <span>{isConnecting ? 'Connecting...' : 'Connect Wallet'}</span>
+      )}
     </button>
   )
 }
