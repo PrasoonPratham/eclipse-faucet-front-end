@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-const RequestAirdrop = () => {
+const RequestAirdrop = ({ account }: { account: string | undefined }) => {
   const [buttonStatus, setButtonStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle')
 
   async function requestAirdrop(address: string, amount: number): Promise<boolean> {
@@ -52,7 +52,7 @@ const RequestAirdrop = () => {
     if (buttonStatus === 'idle') {
       try {
         // Request the user's accounts
-        const accounts = (await (window as any).ethereum.request({ method: 'eth_requestAccounts' })) as string[]
+        const accounts = await(window as any).ethereum.request({ method: 'eth_requestAccounts' }) as string[]
 
         // Get the first account from the accounts array
         const account = accounts[0]
