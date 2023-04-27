@@ -7,49 +7,13 @@ import { CheckIcon, ArrowPathIcon } from '@heroicons/react/20/solid'
 import Banner from './components/Banner'
 import ConnectWalletButton from './components/ConnectWalletButton'
 import { AddNetworkButton } from './components/AddNetworkButton'
+import RequestAirdrop from './components/RequestTokens'
 
 function getLibrary(provider: any): Web3Provider {
   const library = new Web3Provider(provider)
   library.pollingInterval = 12000
   return library
 }
-
-async function requestAirdrop(address: string, amount: number): Promise<boolean> {
-  try {
-    const url = 'https://faucet.evm.zebec.eclipsenetwork.xyz/request_neon'
-    const headers = {
-      'Content-Type': 'application/json',
-    }
-    const body = JSON.stringify({
-      wallet: address,
-      amount: amount,
-    })
-
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: headers,
-      body: body,
-    })
-
-    if (!response.ok) {
-      console.error('Error requesting airdrop', response)
-      return false
-    }
-
-    const data = await response.json()
-    if (data.success) {
-      console.log('Airdrop successful', data)
-      return true
-    } else {
-      console.error('Airdrop failed', data)
-      return false
-    }
-  } catch (error) {
-    console.error('Error requesting airdrop', error)
-    return false
-  }
-}
-
 
 const timeline = [
   {
@@ -88,48 +52,6 @@ export default function Faucet() {
 
   const [isAirdropRequested, setIsAirdropRequested] = useState(false)
 
-  const requestAirdrop = async (address: string, amount: number): Promise<boolean> => {
-    try {
-      const url = 'https://faucet.evm.zebec.eclipsenetwork.xyz/request_neon'
-      const headers = {
-        'Content-Type': 'application/json',
-      }
-      const body = JSON.stringify({
-        wallet: address,
-        amount: amount,
-      })
-
-      console.log('Sending request to:', url)
-      console.log('Request headers:', headers)
-      console.log('Request body:', body)
-
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: headers,
-        body: body,
-      })
-
-      console.log('Response:', response)
-
-      if (!response.ok) {
-        console.error('Error requesting airdrop', response)
-        return false
-      }
-
-      const data = await response.json()
-      if (data.success) {
-        console.log('Airdrop successful', data)
-        return true
-      } else {
-        console.error('Airdrop failed', data)
-        return false
-      }
-    } catch (error) {
-      console.error('Error requesting airdrop', error)
-      return false
-    }
-  }
-
   const onCaptchaChange = (value: string | null) => {
     if (value) {
       setIsCaptchaSolved(true)
@@ -137,27 +59,15 @@ export default function Faucet() {
       setIsCaptchaSolved(false)
     }
   }
-  
+
   // Update the handleButtonClick function to check if the wallet is connected before proceeding to the next section
-  const handleButtonClick = async (eventIdx: number) => {
-    if (
-      (eventIdx === 0 ||
-        (eventIdx === 1 && isWalletConnected) ||
-        (eventIdx === 2 && isNautilusConnected) ||
-        eventIdx > 2) &&
-      !isConnecting
-    ) {
-      if (eventIdx === 2 && isNautilusConnected && isCaptchaSolved && account) {
-        const airdropSuccess = await requestAirdrop(account, 10)
-        setIsAirdropRequested(airdropSuccess)
-        if (airdropSuccess) {
-          setVisibleSections(5)
-        }
-      } else {
-        setVisibleSections((prevState) => prevState + 1)
-      }
-    }
+const handleButtonClick = async (eventIdx: number) => {
+  if ((eventIdx === 0 || eventIdx === 1 || (eventIdx === 2 && isNautilusConnected) || eventIdx > 2) && !isConnecting) {
+    setVisibleSections((prevState) => prevState + 1)
   }
+}
+
+
 
   const resetTimeline = () => {
     setVisibleSections(1)
@@ -171,6 +81,9 @@ export default function Faucet() {
   }
 
   const [isWalletConnected, setIsWalletConnected] = useState(false)
+  const [currentAccount, setCurrentAccount] = useState<string | undefined>(undefined)
+
+
 
   useEffect(() => {
     if (isWalletConnected) {
@@ -179,16 +92,9 @@ export default function Faucet() {
     }
   }, [isWalletConnected])
 
-  const { account } = useWeb3React()
 
   const [isConnecting, setIsConnecting] = useState(false)
   const [isNautilusConnected, setIsNautilusConnected] = useState(false)
-
-  useEffect(() => {
-    if (account) {
-      console.log('Connected account:', account)
-    }
-  }, [account])
 
   return (
     <div>
@@ -291,31 +197,7 @@ export default function Faucet() {
                       )}
                       {eventIdx === 3 && (
                         <div className="flex justify-center mt-2">
-                          <div className="form">
-                            <div className="address-display">
-                              <p>Connected wallet address:</p>
-                              <p>{account || 'No connected wallet'}</p>
-                            </div>
-
-                            <button
-                              className="send inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 mt-4 mb-2"
-                              type="submit"
-                              onClick={async () => {
-                                if (account) {
-                                  const success = await requestAirdrop(account, 10)
-                                  if (success) {
-                                    console.log('Airdrop successful')
-                                  } else {
-                                    console.log('Airdrop failed')
-                                  }
-                                } else {
-                                  console.log('No connected wallet')
-                                }
-                              }}
-                            >
-                              {'Send tokens'}
-                            </button>
-                          </div>
+                          <RequestAirdrop />
                         </div>
                       )}
 

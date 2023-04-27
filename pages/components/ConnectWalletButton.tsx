@@ -30,7 +30,7 @@ const ConnectWalletButton: React.FC<Props> = ({ onConnected, onConnecting, isCon
     } else {
       setWalletNotFound(true)
     }
-  }, [])
+  }, [account])
 
   const onClick = async () => {
     if (onConnecting) {
