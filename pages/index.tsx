@@ -81,9 +81,24 @@ const handleButtonClick = async (eventIdx: number) => {
   }
 
   const [isWalletConnected, setIsWalletConnected] = useState(false)
-  const [currentAccount, setCurrentAccount] = useState<string | undefined>(undefined)
+ const [currentAccount, setCurrentAccount] = useState<string | undefined>(undefined)
 
+  async function pubKey() { 
+     
+        // Request the user's accounts
+        const accounts = await(window as any).ethereum.request({ method: 'eth_requestAccounts' }) as string[]
 
+        // Get the first account from the accounts array
+        const account = accounts[0]
+
+        if (account) {
+          console.log('Account address:', account)
+          console.log('Airdrop requested for account:', account)
+          setCurrentAccount(account)
+        } else {
+          console.log('No account found.')
+        }
+  }
 
   useEffect(() => {
     if (isWalletConnected) {
@@ -91,6 +106,7 @@ const handleButtonClick = async (eventIdx: number) => {
       console.log('Wallet connected:', isWalletConnected) // Add this line
     }
   }, [isWalletConnected])
+
 
 
   const [isConnecting, setIsConnecting] = useState(false)
@@ -196,8 +212,8 @@ const handleButtonClick = async (eventIdx: number) => {
                         </div>
                       )}
                       {eventIdx === 3 && (
-                        <div className="flex justify-center mt-2">
-                          <RequestAirdrop />
+                        <div className="flex justify-center mt-2" onClick={() => pubKey()}>
+                          <RequestAirdrop account={currentAccount} />
                         </div>
                       )}
 
