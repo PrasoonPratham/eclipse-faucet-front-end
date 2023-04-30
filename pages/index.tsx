@@ -149,7 +149,7 @@ const handleButtonClick = async (eventIdx: number) => {
                         <div>
                           <span
                             className={classNames(
-                              'h-8 w-8 rounded-full flex items-center justify-center ring-8 ring-gray-900',
+                              'h-8 w-8 rounded-full flex items-center justify-center ring-8 ring-gray-800',
                               eventIdx === 1 && !isWalletConnected
                                 ? 'bg-green-500'
                                 : eventIdx < visibleSections
@@ -222,13 +222,9 @@ const handleButtonClick = async (eventIdx: number) => {
                           <button
                             onClick={() => handleButtonClick(eventIdx)}
                             disabled={(!isCaptchaSolved && eventIdx === 0) || (eventIdx === 3 && !isNautilusConnected)}
-                            className={`inline-flex items-center my-3 px-3 py-1.5 border border-transparent text-sm font-medium rounded shadow-sm text-white ${
-                              isAirdropRequested && eventIdx === 3
-                                ? 'bg-green-500 hover:bg-green-600'
-                                : 'bg-blue-500 hover:bg-blue-600'
-                            } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 mt-4 mb-2`}
+                            className="inline-flex items-center my-3 px-3 py-1.5 border-2 border-white text-white bg-transparent hover:bg-white hover:text-gray-700 focus:outline-none transition-all duration-300 ease-in focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 mt-4 mb-2"
                           >
-                            <span className="ml-2">{event.message}</span>
+                            <span>{event.message}</span>
                           </button>
                         </div>
                       )}
@@ -241,9 +237,8 @@ const handleButtonClick = async (eventIdx: number) => {
               <div className="flex justify-center -my-6">
                 <button
                   onClick={resetTimeline}
-                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 mt-4 mb-2"
+                  className="inline-flex items-center px-4 py-2 border-2 border-white text-white bg-transparent hover:bg-white hover:text-gray-700 focus:outline-none transition-all duration-300 ease-in shadow-sm focus:ring-2 focus:ring-offset-2 focus:ring-white mt-4 mb-2"
                 >
-                  <ArrowPathIcon className="h-5 w-5 mr-3" aria-hidden="true" />
                   Start Again
                 </button>
               </div>
