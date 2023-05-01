@@ -79,7 +79,7 @@ const handleButtonClick = async (eventIdx: number) => {
   }
 
   const [isWalletConnected, setIsWalletConnected] = useState(false)
- const [currentAccount, setCurrentAccount] = useState<string | undefined>(undefined)
+  const [currentAccount, setCurrentAccount] = useState<string | undefined>(undefined)
 
   async function pubKey() { 
      
@@ -109,6 +109,7 @@ const handleButtonClick = async (eventIdx: number) => {
 
   const [isConnecting, setIsConnecting] = useState(false)
   const [isChainConnected, setisChainConnected] = useState(false)
+
 
   return (
     <div>

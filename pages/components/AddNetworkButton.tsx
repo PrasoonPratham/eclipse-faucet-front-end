@@ -158,8 +158,9 @@ export const AddNetworkButton: React.FC<AddNetworkButtonProps> = ({
     }
   };
 
-  const getStatusTextAndColor = () => {
-    const currentChainId = window.ethereum?.chainId;
+const getStatusTextAndColor = () => {
+  if (typeof window !== "undefined" && window.ethereum) {
+    const currentChainId = window.ethereum.chainId;
     if (
       isConnected &&
       selectedChain &&
@@ -172,14 +173,15 @@ export const AddNetworkButton: React.FC<AddNetworkButtonProps> = ({
         color: "text-green-500",
         icon: <CheckCircleIcon className="w-4 h-4 mr-2" />,
       };
-    } else {
-      return {
-        text: "Not connected",
-        color: "text-red-500",
-        icon: <ExclamationCircleIcon className="w-4 h-4 mr-2" />,
-      };
     }
+  }
+  return {
+    text: "Not connected",
+    color: "text-red-500",
+    icon: <ExclamationCircleIcon className="w-4 h-4 mr-2" />,
   };
+};
+
 
   const { text, color, icon } = getStatusTextAndColor();
 
