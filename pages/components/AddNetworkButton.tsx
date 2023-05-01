@@ -14,13 +14,16 @@ interface Chain {
 interface AddNetworkButtonProps {
   children: React.ReactNode;
   setIsConnected: (connected: boolean) => void;
+  onRpcUrlChanged: (rpcUrl: string | null) => void; // Make sure this line is here
 }
+
 
 const fetchChains = async (): Promise<Chain[]> => {
   const response = await fetch('https://api.chains.eclipse.builders/evm_chains');
   const data = await response.json();
   return data;
 };
+
 
 const isValidUrl = (url:string) => {
   try {
@@ -39,6 +42,7 @@ const sanitizeUrl = (url: string) => {
 export const AddNetworkButton: React.FC<AddNetworkButtonProps> = ({
   children,
   setIsConnected,
+  onRpcUrlChanged,
 }) => {
   const [chains, setChains] = useState<Chain[]>([]);
   const [selectedChain, setSelectedChain] = useState<Chain | null>(null);
@@ -98,6 +102,15 @@ useEffect(() => {
     setIsLoading(false);
   })();
 }, []);
+  
+  // Add this useEffect
+  useEffect(() => {
+    if (selectedChain) {
+      onRpcUrlChanged(selectedChain.rpc_urls[0]);
+    } else {
+      onRpcUrlChanged(null);
+    }
+  }, [selectedChain, onRpcUrlChanged]);
 
 const loadingSpinner = (
   <div className="spinner-border text-primary" role="status">

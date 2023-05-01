@@ -1,11 +1,31 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
-const RequestAirdrop = ({ account }: { account: string | undefined }) => {
+interface RequestAirdropProps {
+  account: string | undefined;
+  rpcUrl: string;
+}
+
+const RequestAirdrop: React.FC<RequestAirdropProps> = ({ account, rpcUrl }) => {
   const [buttonStatus, setButtonStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle')
+  const [modifiedRpcUrl, setModifiedRpcUrl] = useState('');
+
+const modifyRpcUrl = (url: string) => {
+  const regex = /^(https?):\/\/(api)\.(.+)\.(\w+)\.(\w+)\/(solana)$/i;
+  const modifiedUrl = url.replace(regex, '$1://faucet.$3.$4.$5/request_neon');
+  console.log('Modified RPC URL:', modifiedUrl); // Add this line
+  setModifiedRpcUrl(modifiedUrl);
+};
+
+
+  useEffect(() => {
+    if (rpcUrl) {
+      modifyRpcUrl(rpcUrl);
+    }
+  }, [rpcUrl]);
 
   async function requestAirdrop(address: string, amount: number): Promise<boolean> {
     try {
-      const url = 'https://faucet.evm.zebec.eclipsenetwork.xyz/request_neon'
+      const url = modifiedRpcUrl;
       const headers = {
         'Content-Type': 'application/json',
       }
@@ -47,6 +67,7 @@ const RequestAirdrop = ({ account }: { account: string | undefined }) => {
 
         if (account) {
           console.log('Account address:', account)
+          console.log(rpcUrl)
           setButtonStatus('sending')
           await requestAirdrop(account, 1)
           console.log('Airdrop requested for account:', account)

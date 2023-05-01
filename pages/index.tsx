@@ -49,6 +49,7 @@ function classNames(...classes: string[]) {
 export default function Faucet() {
   const [visibleSections, setVisibleSections] = useState(1)
   const [isCaptchaSolved, setIsCaptchaSolved] = useState(false)
+  const [rpcUrl, setRpcUrl] = useState<string | null>(null);
 
   const onCaptchaChange = (value: string | null) => {
     if (value) {
@@ -69,13 +70,13 @@ const handleButtonClick = async (eventIdx: number) => {
 
   const resetTimeline = () => {
     setVisibleSections(1)
-    setIsWalletConnected(false) // Add this line to reset the wallet connection state
+    setIsWalletConnected(false) 
   }
 
   // Add the handleWalletConnected callback function
   const handleWalletConnected = () => {
     setIsWalletConnected(true)
-    console.log('Wallet connected') // Add this line
+    console.log('Wallet connected')
   }
 
   const [isWalletConnected, setIsWalletConnected] = useState(false)
@@ -205,14 +206,14 @@ const handleButtonClick = async (eventIdx: number) => {
 
                       {eventIdx === 2 && (
                         <div className="flex justify-center mt-2">
-                          <AddNetworkButton setIsConnected={setisChainConnected}>
+                          <AddNetworkButton setIsConnected={setisChainConnected} onRpcUrlChanged={setRpcUrl} >
                             {'Switch Network'}
                           </AddNetworkButton>
                         </div>
                       )}
                       {eventIdx === 3 && (
                         <div className="flex justify-center mt-2" onClick={() => pubKey()}>
-                          <RequestAirdrop account={currentAccount} />
+                          <RequestAirdrop account={currentAccount} rpcUrl={rpcUrl || ''} />
                         </div>
                       )}
 
