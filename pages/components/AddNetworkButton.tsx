@@ -85,6 +85,8 @@ export const AddNetworkButton: React.FC<AddNetworkButtonProps> = ({ children, se
     })();
   }, []);
 
+const sanitizedBlockExplorerUrls = selectedChain?.block_explorer_urls.map(sanitizeUrl).filter(Boolean);
+
   const addNetwork = async (chain: Chain) => {
     if (window.ethereum) {
       try {
@@ -95,6 +97,7 @@ export const AddNetworkButton: React.FC<AddNetworkButtonProps> = ({ children, se
               chainId: chain.chain_id,
               chainName: chain.chain_name,
               rpcUrls: chain.rpc_urls,
+              blockExplorerUrls: sanitizedBlockExplorerUrls,
               nativeCurrency: {
                 name: chain.native_currency_name,
                 decimals: chain.native_currency_decimals,
@@ -103,7 +106,13 @@ export const AddNetworkButton: React.FC<AddNetworkButtonProps> = ({ children, se
             },
           ],
         });
-        setIsConnected(true);
+        const currentChainId = await window.ethereum.request({ method: 'eth_chainId' });
+if (currentChainId === chain.chain_id) {
+  setIsConnected(true);
+} else {
+  setIsConnected(false);
+}
+
       } catch (error: any) {
         console.error('Error adding network:', error);
         console.log('Parameters passed to wallet_addEthereumChain:', {
@@ -159,7 +168,7 @@ const handleAddNetworkClick = () => {
 
 
   return (
-    <div className="flex flex-col items-start">
+    <div className="flex flex-col justify-center items-center">
 <select
   onChange={handleChainChange}
   value={userSelectedChain?.chain_id || ''}
