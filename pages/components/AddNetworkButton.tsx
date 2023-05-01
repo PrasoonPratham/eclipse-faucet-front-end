@@ -1,71 +1,92 @@
-import { CheckCircleIcon, ExclamationCircleIcon } from '@heroicons/react/20/solid'
-import React, { useEffect, useState } from 'react'
+import { CheckCircleIcon, ExclamationCircleIcon } from '@heroicons/react/20/solid';
+import React, { useEffect, useState } from 'react';
 
 interface Chain {
-  chain_id: string
-  chain_name: string
-  rpc_urls: string[]
-  block_explorer_urls: string[]
-  native_currency_name: string
-  native_currency_decimals: number
-  native_currency_symbol: string
+  chain_id: string;
+  chain_name: string;
+  rpc_urls: string[];
+  block_explorer_urls: string[];
+  native_currency_name: string;
+  native_currency_decimals: number;
+  native_currency_symbol: string;
 }
 
 interface AddNetworkButtonProps {
-  children: React.ReactNode
-  setIsConnected: (connected: boolean) => void
+  children: React.ReactNode;
+  setIsConnected: (connected: boolean) => void;
 }
 
 const fetchChains = async (): Promise<Chain[]> => {
-  const response = await fetch('https://api.chains.eclipse.builders/evm_chains')
-  const data = await response.json()
-  return data
-}
+  const response = await fetch('https://api.chains.eclipse.builders/evm_chains');
+  const data = await response.json();
+  return data;
+};
+
+const isValidUrl = (url:string) => {
+  try {
+    new URL(url);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+const sanitizeUrl = (url: string) => {
+  const cleanedUrl = url.replace(/\s+/g, '');
+  return isValidUrl(cleanedUrl) ? cleanedUrl : null;
+};
 
 export const AddNetworkButton: React.FC<AddNetworkButtonProps> = ({ children, setIsConnected }) => {
-  const [chains, setChains] = useState<Chain[]>([])
-  const [selectedChain, setSelectedChain] = useState<Chain | null>(null)
-  const [isConnected, setConnected] = useState(false)
+  const [chains, setChains] = useState<Chain[]>([]);
+  const [selectedChain, setSelectedChain] = useState<Chain | null>(null);
+  const [isConnected, setConnected] = useState(false);
 
+
+  
   useEffect(() => {
     if (window.ethereum) {
       const handleChainChanged = async () => {
-        const currentChainId = await window.ethereum.request({ method: 'eth_chainId' })
-        const matchedChain = chains.find((chain) => chain.chain_id === currentChainId)
+        const currentChainId = await window.ethereum.request({ method: 'eth_chainId' });
+        const matchedChain = chains.find((chain) => chain.chain_id === currentChainId);
         if (matchedChain) {
-          setSelectedChain(matchedChain)
-          setConnected(true)
+          setSelectedChain(matchedChain);
+          setConnected(true);
         } else {
-          setSelectedChain(null)
-          setConnected(false)
+          setSelectedChain(null);
+          setConnected(false);
         }
-      }
+      };
 
-      handleChainChanged()
+      handleChainChanged();
 
-      window.ethereum.on('chainChanged', handleChainChanged)
+      window.ethereum.on('chainChanged', handleChainChanged);
 
       return () => {
-        window.ethereum.removeListener('chainChanged', handleChainChanged)
-      }
+        window.ethereum.removeListener('chainChanged', handleChainChanged);
+      };
     }
-  }, [chains])
+  }, [chains, selectedChain, isConnected]);
 
   useEffect(() => {
-    ;(async () => {
-      const fetchedChains = await fetchChains()
-      setChains(fetchedChains)
-    })()
-  }, [])
+    const checkConnectionStatus = async () => {
+      if (window.ethereum && selectedChain) {
+        const currentChainId = await window.ethereum.request({ method: 'eth_chainId' });
+        setConnected(currentChainId === selectedChain.chain_id);
+      }
+    };
 
-  const removeSpacesFromUrl = (url: string) => {
-    return url.replace(/\s+/g, '')
-  }
+    checkConnectionStatus();
+  }, [selectedChain]);
+
+  useEffect(() => {
+    (async () => {
+      const fetchedChains = await fetchChains();
+      setChains(fetchedChains);
+    })();
+  }, []);
 
   const addNetwork = async (chain: Chain) => {
     if (window.ethereum) {
-      const cleanedBlockExplorerUrls = chain.block_explorer_urls.map(removeSpacesFromUrl)
-
       try {
         await window.ethereum.request({
           method: 'wallet_addEthereumChain',
@@ -79,13 +100,12 @@ export const AddNetworkButton: React.FC<AddNetworkButtonProps> = ({ children, se
                 decimals: chain.native_currency_decimals,
                 symbol: chain.native_currency_symbol,
               },
-              blockExplorerUrls: cleanedBlockExplorerUrls,
             },
           ],
-        })
-        setIsConnected(true)
+        });
+        setIsConnected(true);
       } catch (error: any) {
-        console.error('Error adding network:', error)
+        console.error('Error adding network:', error);
         console.log('Parameters passed to wallet_addEthereumChain:', {
           chainId: chain.chain_id,
           chainName: chain.chain_name,
@@ -94,52 +114,58 @@ export const AddNetworkButton: React.FC<AddNetworkButtonProps> = ({ children, se
             name: chain.native_currency_name,
             decimals: chain.native_currency_decimals,
             symbol: chain.native_currency_symbol,
-          },
-          blockExplorerUrls: cleanedBlockExplorerUrls,
-        })
+                 },
+        });
       }
     } else {
-      alert('Ethereum provider not found')
+      alert('Ethereum provider not found');
     }
-  }
+  };
 
-  const handleChainChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const chainId = e.target.value
-    const selected = chains.find((chain) => chain.chain_id === chainId)
-    setSelectedChain(selected || null)
-  }
+const handleChainChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const chainId = e.target.value;
+  const selected = chains.find((chain) => chain.chain_id === chainId);
+  setUserSelectedChain(selected || null);
+};
 
-  const handleAddNetworkClick = () => {
-    if (selectedChain) {
-      addNetwork(selectedChain)
-    }
+
+const handleAddNetworkClick = () => {
+  if (userSelectedChain) {
+    addNetwork(userSelectedChain);
   }
+};
+
+
   const getStatusTextAndColor = () => {
-    const currentChainId = window.ethereum?.chainId
+    const currentChainId = window.ethereum?.chainId;
     if (isConnected && selectedChain && selectedChain.chain_id === currentChainId) {
       return {
         text: `Connected: ${selectedChain.chain_name}`,
         color: 'text-green-500',
         icon: <CheckCircleIcon className="w-4 h-4 mr-2" />,
-      }
+      };
     } else {
       return {
         text: 'Not connected',
         color: 'text-red-500',
         icon: <ExclamationCircleIcon className="w-4 h-4 mr-2" />,
-      }
+      };
     }
-  }
+  };
 
-  const { text, color, icon } = getStatusTextAndColor()
+  const { text, color, icon } = getStatusTextAndColor();
+
+  const [userSelectedChain, setUserSelectedChain] = useState<Chain | null>(null);
+
 
   return (
     <div className="flex flex-col items-start">
-      <select
-        onChange={handleChainChange}
-        value={selectedChain?.chain_id || ''}
-        className="block appearance-none w-full bg-white border border-gray-200 text-gray-700 py-2 pl-3 pr-10 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 mb-2 hover:border-gray-300 rounded transition duration-150 ease-in-out"
-      >
+<select
+  onChange={handleChainChange}
+  value={userSelectedChain?.chain_id || ''}
+  className="block appearance-none w-full bg-white border border-gray-200 text-gray-700 py-2 pl-3 pr-10 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 mb-2 hover:border-gray-300 rounded transition duration-150 ease-in-out"
+>
+
         <option value="">Select a chain</option>
         {chains.map((chain) => (
           <option key={chain.chain_id} value={chain.chain_id}>
@@ -163,7 +189,7 @@ export const AddNetworkButton: React.FC<AddNetworkButtonProps> = ({ children, se
         {text}
       </p>
     </div>
-  )
-}
+  );
+};
 
-export default AddNetworkButton
+export default AddNetworkButton;
