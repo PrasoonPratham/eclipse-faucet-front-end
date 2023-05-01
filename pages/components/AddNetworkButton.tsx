@@ -46,7 +46,7 @@ export const AddNetworkButton: React.FC<AddNetworkButtonProps> = ({
   const [userSelectedChain, setUserSelectedChain] = useState<Chain | null>(
     null
   );
-
+  const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
     if (typeof window !== "undefined" && window.ethereum) {
       const handleChainChanged = async () => {
@@ -90,12 +90,21 @@ export const AddNetworkButton: React.FC<AddNetworkButtonProps> = ({
     }
   }, [selectedChain]);
 
-  useEffect(() => {
-    (async () => {
-      const fetchedChains = await fetchChains();
-      setChains(fetchedChains);
-    })();
-  }, []);
+useEffect(() => {
+  (async () => {
+    setIsLoading(true);
+    const fetchedChains = await fetchChains();
+    setChains(fetchedChains);
+    setIsLoading(false);
+  })();
+}, []);
+
+  const LoadingSpinner = () => (
+  <div className="spinner-border text-primary" role="status">
+    <span className="sr-only">Loading...</span>
+  </div>
+);
+
 
   const sanitizedBlockExplorerUrls = selectedChain?.block_explorer_urls
     .map(sanitizeUrl)
@@ -187,18 +196,23 @@ const getStatusTextAndColor = () => {
 
   return (
     <div className="flex flex-col justify-center items-center">
-      <select
-        onChange={handleChainChange}
-        value={userSelectedChain?.chain_id || ""}
-        className="block w-full bg-white border border-gray-200 text-gray-700 py-2 pl-3 pr-10 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 mb-2 hover:border-gray-300 rounded transition duration-150 ease-in-out"
-      >
-        <option value="">Select a chain</option>
-        {chains.map((chain) => (
-          <option key={chain.chain_id} value={chain.chain_id}>
-            {chain.chain_name}
-          </option>
-        ))}
-      </select>
+      {isLoading ? (
+  <LoadingSpinner />
+) : (
+  <select
+    onChange={handleChainChange}
+    value={userSelectedChain?.chain_id || ""}
+    className="block w-full bg-white border border-gray-200 text-gray-700 py-2 pl-3 pr-10 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 mb-2 hover:border-gray-300 rounded transition duration-150 ease-in-out"
+  >
+    <option value="">Select a chain</option>
+    {chains.map((chain) => (
+      <option key={chain.chain_id} value={chain.chain_id}>
+        {chain.chain_name}
+      </option>
+    ))}
+  </select>
+)}
+
       <button
         onClick={handleAddNetworkClick}
         disabled={!selectedChain}
