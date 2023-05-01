@@ -99,11 +99,13 @@ useEffect(() => {
   })();
 }, []);
 
-  const LoadingSpinner = () => (
+const loadingSpinner = (
   <div className="spinner-border text-primary" role="status">
     <span className="sr-only">Loading...</span>
   </div>
 );
+
+
 
 
   const sanitizedBlockExplorerUrls = selectedChain?.block_explorer_urls
@@ -197,8 +199,10 @@ const getStatusTextAndColor = () => {
   return (
     <div className="flex flex-col justify-center items-center">
       {isLoading ? (
-  <LoadingSpinner />
+  loadingSpinner
 ) : (
+
+
   <select
     onChange={handleChainChange}
     value={userSelectedChain?.chain_id || ""}
