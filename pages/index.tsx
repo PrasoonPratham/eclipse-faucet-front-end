@@ -28,7 +28,7 @@ const timeline = [
   },
   {
     id: 3,
-    content: 'Connect Nautilus EVM.',
+    content: 'Connect to EVM chain.',
     message: 'Next Step',
   },
   {

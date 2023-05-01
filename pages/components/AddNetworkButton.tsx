@@ -188,7 +188,7 @@ export const AddNetworkButton: React.FC<AddNetworkButtonProps> = ({
       <select
         onChange={handleChainChange}
         value={userSelectedChain?.chain_id || ""}
-        className="block appearance-none w-full bg-white border border-gray-200 text-gray-700 py-2 pl-3 pr-10 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 mb-2 hover:border-gray-300 rounded transition duration-150 ease-in-out"
+        className="block w-full bg-white border border-gray-200 text-gray-700 py-2 pl-3 pr-10 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 mb-2 hover:border-gray-300 rounded transition duration-150 ease-in-out"
       >
         <option value="">Select a chain</option>
         {chains.map((chain) => (
