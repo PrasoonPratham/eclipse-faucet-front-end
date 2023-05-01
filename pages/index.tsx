@@ -62,9 +62,14 @@ export default function Faucet() {
   // Update the handleButtonClick function to check if the wallet is connected before proceeding to the next section
 const handleButtonClick = async (eventIdx: number) => {
   if ((eventIdx === 0 || eventIdx === 1 || (eventIdx === 2 && isChainConnected) || eventIdx > 2) && !isConnecting) {
-    setVisibleSections((prevState) => prevState + 1)
+    if (eventIdx === 1 && !isWalletConnected) {
+      alert('Please connect your wallet first');
+    } else {
+      setVisibleSections((prevState) => prevState + 1);
+    }
   }
-}
+};
+
 
 
 
