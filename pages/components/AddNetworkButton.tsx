@@ -43,6 +43,9 @@ export const AddNetworkButton: React.FC<AddNetworkButtonProps> = ({
   const [chains, setChains] = useState<Chain[]>([]);
   const [selectedChain, setSelectedChain] = useState<Chain | null>(null);
   const [isConnected, setConnected] = useState(false);
+  const [userSelectedChain, setUserSelectedChain] = useState<Chain | null>(
+    null
+  );
 
   useEffect(() => {
     if (typeof window !== "undefined" && window.ethereum) {
@@ -160,7 +163,9 @@ export const AddNetworkButton: React.FC<AddNetworkButtonProps> = ({
     if (
       isConnected &&
       selectedChain &&
-      selectedChain.chain_id === currentChainId
+      userSelectedChain &&
+      selectedChain.chain_id === currentChainId &&
+      userSelectedChain.chain_id === currentChainId
     ) {
       return {
         text: `Connected: ${selectedChain.chain_name}`,
@@ -177,10 +182,6 @@ export const AddNetworkButton: React.FC<AddNetworkButtonProps> = ({
   };
 
   const { text, color, icon } = getStatusTextAndColor();
-
-  const [userSelectedChain, setUserSelectedChain] = useState<Chain | null>(
-    null
-  );
 
   return (
     <div className="flex flex-col justify-center items-center">
