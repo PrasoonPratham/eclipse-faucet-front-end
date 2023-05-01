@@ -50,8 +50,6 @@ export default function Faucet() {
   const [visibleSections, setVisibleSections] = useState(1)
   const [isCaptchaSolved, setIsCaptchaSolved] = useState(false)
 
-  const [isAirdropRequested, setIsAirdropRequested] = useState(false)
-
   const onCaptchaChange = (value: string | null) => {
     if (value) {
       setIsCaptchaSolved(true)
@@ -62,7 +60,7 @@ export default function Faucet() {
 
   // Update the handleButtonClick function to check if the wallet is connected before proceeding to the next section
 const handleButtonClick = async (eventIdx: number) => {
-  if ((eventIdx === 0 || eventIdx === 1 || (eventIdx === 2 && isNautilusConnected) || eventIdx > 2) && !isConnecting) {
+  if ((eventIdx === 0 || eventIdx === 1 || (eventIdx === 2 && isChainConnected) || eventIdx > 2) && !isConnecting) {
     setVisibleSections((prevState) => prevState + 1)
   }
 }
@@ -110,7 +108,7 @@ const handleButtonClick = async (eventIdx: number) => {
 
 
   const [isConnecting, setIsConnecting] = useState(false)
-  const [isNautilusConnected, setIsNautilusConnected] = useState(false)
+  const [isChainConnected, setisChainConnected] = useState(false)
 
   return (
     <div>
@@ -206,7 +204,7 @@ const handleButtonClick = async (eventIdx: number) => {
 
                       {eventIdx === 2 && (
                         <div className="flex justify-center mt-2">
-                          <AddNetworkButton setIsNautilusConnected={setIsNautilusConnected}>
+                          <AddNetworkButton setIsConnected={setisChainConnected}>
                             {'Switch Network'}
                           </AddNetworkButton>
                         </div>
@@ -221,7 +219,7 @@ const handleButtonClick = async (eventIdx: number) => {
                         <div className="flex justify-center">
                           <button
                             onClick={() => handleButtonClick(eventIdx)}
-                            disabled={(!isCaptchaSolved && eventIdx === 0) || (eventIdx === 3 && !isNautilusConnected)}
+                            disabled={(!isCaptchaSolved && eventIdx === 0) || (eventIdx === 3 && !isChainConnected)}
                             className="inline-flex items-center my-3 px-3 py-1.5 border-2 border-white text-white bg-transparent hover:bg-white hover:text-gray-700 focus:outline-none transition-all duration-300 ease-in focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 mt-4 mb-2"
                           >
                             <span>{event.message}</span>

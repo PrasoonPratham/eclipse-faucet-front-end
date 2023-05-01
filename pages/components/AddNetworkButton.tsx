@@ -1,87 +1,169 @@
-import React, { useEffect, useState } from 'react';
+import { CheckCircleIcon, ExclamationCircleIcon } from '@heroicons/react/20/solid'
+import React, { useEffect, useState } from 'react'
 
-interface AddNetworkButtonProps {
-  children: React.ReactNode;
-  setIsNautilusConnected: (connected: boolean) => void;
+interface Chain {
+  chain_id: string
+  chain_name: string
+  rpc_urls: string[]
+  block_explorer_urls: string[]
+  native_currency_name: string
+  native_currency_decimals: number
+  native_currency_symbol: string
 }
 
-export const AddNetworkButton: React.FC<AddNetworkButtonProps> = ({ children, setIsNautilusConnected  }) => {
-  const [isNetworkAdded, setIsNetworkAdded] = useState(false);
-  const [connectedChain, setConnectedChain] = useState('');
+interface AddNetworkButtonProps {
+  children: React.ReactNode
+  setIsConnected: (connected: boolean) => void
+}
 
-  const addNetwork = async () => {
+const fetchChains = async (): Promise<Chain[]> => {
+  const response = await fetch('https://api.chains.eclipse.builders/evm_chains')
+  const data = await response.json()
+  return data
+}
+
+export const AddNetworkButton: React.FC<AddNetworkButtonProps> = ({ children, setIsConnected }) => {
+  const [chains, setChains] = useState<Chain[]>([])
+  const [selectedChain, setSelectedChain] = useState<Chain | null>(null)
+  const [isConnected, setConnected] = useState(false)
+
+  useEffect(() => {
     if (window.ethereum) {
+      const handleChainChanged = async () => {
+        const currentChainId = await window.ethereum.request({ method: 'eth_chainId' })
+        const matchedChain = chains.find((chain) => chain.chain_id === currentChainId)
+        if (matchedChain) {
+          setSelectedChain(matchedChain)
+          setConnected(true)
+        } else {
+          setSelectedChain(null)
+          setConnected(false)
+        }
+      }
+
+      handleChainChanged()
+
+      window.ethereum.on('chainChanged', handleChainChanged)
+
+      return () => {
+        window.ethereum.removeListener('chainChanged', handleChainChanged)
+      }
+    }
+  }, [chains])
+
+  useEffect(() => {
+    ;(async () => {
+      const fetchedChains = await fetchChains()
+      setChains(fetchedChains)
+    })()
+  }, [])
+
+  const removeSpacesFromUrl = (url: string) => {
+    return url.replace(/\s+/g, '')
+  }
+
+  const addNetwork = async (chain: Chain) => {
+    if (window.ethereum) {
+      const cleanedBlockExplorerUrls = chain.block_explorer_urls.map(removeSpacesFromUrl)
+
       try {
         await window.ethereum.request({
           method: 'wallet_addEthereumChain',
           params: [
             {
-              chainId: `0x${(91002).toString(16)}`,
-              chainName: 'Nautilus Triton Testnet',
-              rpcUrls: ['https://api.evm.zebec.eclipsenetwork.xyz/solana'],
+              chainId: chain.chain_id,
+              chainName: chain.chain_name,
+              rpcUrls: chain.rpc_urls,
               nativeCurrency: {
-                name: 'tZBC',
-                decimals: 18,
-                symbol: 'tZBC',
+                name: chain.native_currency_name,
+                decimals: chain.native_currency_decimals,
+                symbol: chain.native_currency_symbol,
               },
-              blockExplorerUrls: ['https://triton.nautscan.com/'],
+              blockExplorerUrls: cleanedBlockExplorerUrls,
             },
           ],
-        });
-        setIsNetworkAdded(true);
-      } catch (error) {
-        console.error('Error adding network:', error);
+        })
+        setIsConnected(true)
+      } catch (error: any) {
+        console.error('Error adding network:', error)
+        console.log('Parameters passed to wallet_addEthereumChain:', {
+          chainId: chain.chain_id,
+          chainName: chain.chain_name,
+          rpcUrls: chain.rpc_urls,
+          nativeCurrency: {
+            name: chain.native_currency_name,
+            decimals: chain.native_currency_decimals,
+            symbol: chain.native_currency_symbol,
+          },
+          blockExplorerUrls: cleanedBlockExplorerUrls,
+        })
       }
     } else {
-      alert('Ethereum provider not found');
+      alert('Ethereum provider not found')
     }
-  };
-
-useEffect(() => {
-  if (window.ethereum) {
-    // Add this block to initialize the connectedChain state
-    (async () => {
-      const currentChainId = await window.ethereum.request({ method: 'eth_chainId' });
-      const isConnected = currentChainId === `0x${(91002).toString(16)}`;
-      setIsNetworkAdded(isConnected);
-      setConnectedChain(isConnected ? 'Nautilus Triton Testnet' : '');
-      setIsNautilusConnected(isConnected);
-    })();
-
-    // Listen for chainChanged event
-    window.ethereum.on('chainChanged', () => {
-      const isConnected = window.ethereum.chainId === `0x${(91002).toString(16)}`;
-      setIsNetworkAdded(isConnected);
-      setConnectedChain(isConnected ? 'Nautilus Triton Testnet' : '');
-      setIsNautilusConnected(isConnected);
-    });
-
-    // Clean up the listener when the component is unmounted
-    return () => {
-      if (window.ethereum.removeListener) {
-        window.ethereum.removeListener('chainChanged', () => {});
-      }
-    };
   }
-}, [setIsNautilusConnected]);
 
+  const handleChainChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const chainId = e.target.value
+    const selected = chains.find((chain) => chain.chain_id === chainId)
+    setSelectedChain(selected || null)
+  }
 
-  const buttonText = connectedChain ? `${connectedChain}` : children;
+  const handleAddNetworkClick = () => {
+    if (selectedChain) {
+      addNetwork(selectedChain)
+    }
+  }
+  const getStatusTextAndColor = () => {
+    const currentChainId = window.ethereum?.chainId
+    if (isConnected && selectedChain && selectedChain.chain_id === currentChainId) {
+      return {
+        text: `Connected: ${selectedChain.chain_name}`,
+        color: 'text-green-500',
+        icon: <CheckCircleIcon className="w-4 h-4 mr-2" />,
+      }
+    } else {
+      return {
+        text: 'Not connected',
+        color: 'text-red-500',
+        icon: <ExclamationCircleIcon className="w-4 h-4 mr-2" />,
+      }
+    }
+  }
 
-    return (
+  const { text, color, icon } = getStatusTextAndColor()
+
+  return (
+    <div className="flex flex-col items-start">
+      <select
+        onChange={handleChainChange}
+        value={selectedChain?.chain_id || ''}
+        className="block appearance-none w-full bg-white border border-gray-200 text-gray-700 py-2 pl-3 pr-10 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 mb-2 hover:border-gray-300 rounded transition duration-150 ease-in-out"
+      >
+        <option value="">Select a chain</option>
+        {chains.map((chain) => (
+          <option key={chain.chain_id} value={chain.chain_id}>
+            {chain.chain_name}
+          </option>
+        ))}
+      </select>
       <button
-        onClick={addNetwork}
-        disabled={connectedChain === 'Nautilus Triton Testnet'}
+        onClick={handleAddNetworkClick}
+        disabled={!selectedChain}
         className={`inline-flex items-center px-4 py-2 border-2 border-white focus:outline-none transition-all duration-300 ease-in ${
-          connectedChain === 'Nautilus Triton Testnet'
-            ? 'bg-white text-gray-700 cursor-not-allowed'
+          !selectedChain
+            ? 'bg-gray-300 text-gray-700 cursor-not-allowed'
             : 'bg-transparent text-white hover:bg-white hover:text-gray-700'
         } focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}
       >
-        {buttonText}
+        {children}
       </button>
-    )
-};
+      <p className={`mt-2 flex items-center ${color}`}>
+        {icon}
+        {text}
+      </p>
+    </div>
+  )
+}
 
-
-export default AddNetworkButton;
+export default AddNetworkButton
