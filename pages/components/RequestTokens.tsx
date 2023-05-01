@@ -12,7 +12,7 @@ const RequestAirdrop: React.FC<RequestAirdropProps> = ({ account, rpcUrl }) => {
 const modifyRpcUrl = (url: string) => {
   const regex = /^(https?):\/\/(api)\.(.+)\.(\w+)\.(\w+)\/(solana)$/i;
   const modifiedUrl = url.replace(regex, '$1://faucet.$3.$4.$5/request_neon');
-  console.log('Modified RPC URL:', modifiedUrl); // Add this line
+  console.log('Modified RPC URL:', modifiedUrl); 
   setModifiedRpcUrl(modifiedUrl);
 };
 

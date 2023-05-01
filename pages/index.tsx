@@ -102,7 +102,7 @@ const handleButtonClick = async (eventIdx: number) => {
   useEffect(() => {
     if (isWalletConnected) {
       setVisibleSections(3)
-      console.log('Wallet connected:', isWalletConnected) // Add this line
+      console.log('Wallet connected:', isWalletConnected)
     }
   }, [isWalletConnected])
 

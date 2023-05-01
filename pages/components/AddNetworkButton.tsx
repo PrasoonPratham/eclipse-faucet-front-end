@@ -103,7 +103,7 @@ useEffect(() => {
   })();
 }, []);
   
-  // Add this useEffect
+
   useEffect(() => {
     if (selectedChain) {
       onRpcUrlChanged(selectedChain.rpc_urls[0]);
