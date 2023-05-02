@@ -112,20 +112,15 @@ export const AddNetworkButton: React.FC<AddNetworkButtonProps> = ({
     }
   }, [selectedChain, onRpcUrlChanged]);
 
-const loadingSpinner = <ArrowPathIcon className="w-10 h-10 text-gray-200 animate-spin" />
+  const loadingSpinner = <ArrowPathIcon className="w-10 h-10 text-gray-200 animate-spin" />
 
-
-
-
-  const sanitizedBlockExplorerUrls = selectedChain?.block_explorer_urls
-    .map(sanitizeUrl)
-    .filter(Boolean);
+  const sanitizedBlockExplorerUrls = selectedChain?.block_explorer_urls.map(sanitizeUrl).filter(Boolean)
 
   const addNetwork = async (chain: Chain) => {
-    if (typeof window !== "undefined" && window.ethereum) {
+    if (typeof window !== 'undefined' && window.ethereum) {
       try {
         await window.ethereum.request({
-          method: "wallet_addEthereumChain",
+          method: 'wallet_addEthereumChain',
           params: [
             {
               chainId: chain.chain_id,
@@ -139,18 +134,18 @@ const loadingSpinner = <ArrowPathIcon className="w-10 h-10 text-gray-200 animate
               },
             },
           ],
-        });
+        })
         const currentChainId = await window.ethereum.request({
-          method: "eth_chainId",
-        });
+          method: 'eth_chainId',
+        })
         if (currentChainId === chain.chain_id) {
-          setIsConnected(true);
+          setIsConnected(true)
         } else {
-          setIsConnected(false);
+          setIsConnected(false)
         }
       } catch (error: any) {
-        console.error("Error adding network:", error);
-        console.log("Parameters passed to wallet_addEthereumChain:", {
+        console.error('Error adding network:', error)
+        console.log('Parameters passed to wallet_addEthereumChain:', {
           chainId: chain.chain_id,
           chainName: chain.chain_name,
           rpcUrls: chain.rpc_urls,
@@ -159,28 +154,28 @@ const loadingSpinner = <ArrowPathIcon className="w-10 h-10 text-gray-200 animate
             decimals: chain.native_currency_decimals,
             symbol: chain.native_currency_symbol,
           },
-        });
+        })
       }
     } else {
-      alert("Ethereum provider not found");
+      alert('Ethereum provider not found')
     }
-  };
+  }
 
   const handleChainChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const chainId = e.target.value;
-    const selected = chains.find((chain) => chain.chain_id === chainId);
-    setUserSelectedChain(selected || null);
-  };
+    const chainId = e.target.value
+    const selected = chains.find((chain) => chain.chain_id === chainId)
+    setUserSelectedChain(selected || null)
+  }
 
   const handleAddNetworkClick = () => {
     if (userSelectedChain) {
-      addNetwork(userSelectedChain);
+      addNetwork(userSelectedChain)
     }
-  };
+  }
 
   const getStatusTextAndColor = () => {
-    if (typeof window !== "undefined" && window.ethereum) {
-      const currentChainId = window.ethereum.chainId;
+    if (typeof window !== 'undefined' && window.ethereum) {
+      const currentChainId = window.ethereum.chainId
       if (
         isConnected &&
         selectedChain &&
@@ -190,20 +185,19 @@ const loadingSpinner = <ArrowPathIcon className="w-10 h-10 text-gray-200 animate
       ) {
         return {
           text: `Connected: ${selectedChain.chain_name}`,
-          color: "text-green-500",
+          color: 'text-green-500',
           icon: <CheckCircleIcon className="w-4 h-4 mr-2" />,
-        };
+        }
       }
     }
     return {
-      text: "Not connected",
-      color: "text-red-500",
+      text: 'Not connected',
+      color: 'text-red-500',
       icon: <ExclamationCircleIcon className="w-4 h-4 mr-2" />,
-    };
-  };
+    }
+  }
 
-
-  const { text, color, icon } = getStatusTextAndColor();
+  const { text, color, icon } = getStatusTextAndColor()
 
   return (
     <div className="flex flex-col justify-center items-center">
@@ -211,22 +205,24 @@ const loadingSpinner = <ArrowPathIcon className="w-10 h-10 text-gray-200 animate
         loadingSpinner
       ) : (
         <>
-          <select
-            onChange={handleChainChange}
-            value={userSelectedChain?.chain_id || ''}
-            className="block w-full bg-white border border-gray-200 text-gray-700 py-2 pl-3 pr-10 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 mb-2 hover:border-gray-300 rounded transition duration-150 ease-in-out"
-          >
-            <option value="">Select a chain</option>
-            {chains.map((chain) => (
-              <option key={chain.chain_id} value={chain.chain_id}>
-                {chain.chain_name}
-              </option>
-            ))}
-          </select>
+          <div className="inline-block">
+            <select
+              onChange={handleChainChange}
+              value={userSelectedChain?.chain_id || ''}
+              className="block w-full bg-white border border-gray-200 text-gray-700 py-2 pl-3 pr-10 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 mb-2 hover:border-gray-300 rounded transition duration-150 ease-in-out"
+            >
+              <option value="">Select a chain</option>
+              {chains.map((chain) => (
+                <option key={chain.chain_id} value={chain.chain_id}>
+                  {chain.chain_name}
+                </option>
+              ))}
+            </select>
+          </div>
 
           <button
             onClick={handleAddNetworkClick}
-            disabled={!userSelectedChain}
+            // disabled={!userSelectedChain}
             className={`inline-flex items-center px-4 py-2 border-2 border-white focus:outline-none transition-all duration-300 ease-in ${
               !selectedChain
                 ? 'bg-gray-300 text-gray-700 cursor-not-allowed'
