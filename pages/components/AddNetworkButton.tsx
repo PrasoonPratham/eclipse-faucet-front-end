@@ -1,4 +1,4 @@
-import { CheckCircleIcon, ExclamationCircleIcon } from '@heroicons/react/20/solid';
+import { CheckCircleIcon, ExclamationCircleIcon, ArrowPathIcon } from '@heroicons/react/20/solid';
 import React, { useEffect, useState } from 'react';
 
 interface Chain {
@@ -14,7 +14,7 @@ interface Chain {
 interface AddNetworkButtonProps {
   children: React.ReactNode;
   setIsConnected: (connected: boolean) => void;
-  onRpcUrlChanged: (rpcUrl: string | null) => void; // Make sure this line is here
+  onRpcUrlChanged: (rpcUrl: string | null) => void; 
 }
 
 
@@ -112,11 +112,7 @@ export const AddNetworkButton: React.FC<AddNetworkButtonProps> = ({
     }
   }, [selectedChain, onRpcUrlChanged]);
 
-  const loadingSpinner = (
-    <div className="spinner-border text-primary" role="status">
-      <span className="sr-only">Loading...</span>
-    </div>
-  );
+const loadingSpinner = <ArrowPathIcon className="w-10 h-10 text-gray-200 animate-spin" />
 
 
 
