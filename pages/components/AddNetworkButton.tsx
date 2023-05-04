@@ -225,7 +225,7 @@ export const AddNetworkButton: React.FC<AddNetworkButtonProps> = ({
             // disabled={!userSelectedChain}
             className={`inline-flex items-center px-4 py-2 border-2 border-white focus:outline-none transition-all duration-300 ease-in ${
               !selectedChain
-                ? 'bg-gray-300 text-gray-700 cursor-not-allowed'
+                ? 'bg-transparent text-white hover:bg-white hover:text-gray-700'
                 : 'bg-transparent text-white hover:bg-white hover:text-gray-700'
             } focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}
           >
