@@ -69,7 +69,7 @@ const modifyRpcUrl = (url: string) => {
           console.log('Account address:', account)
           console.log(rpcUrl)
           setButtonStatus('sending')
-          await requestAirdrop(account, 1)
+          await requestAirdrop(account, 10)
           console.log('Airdrop requested for account:', account)
         } else {
           console.log('No account found.')
