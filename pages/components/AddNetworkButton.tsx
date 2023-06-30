@@ -1,118 +1,125 @@
-import { CheckCircleIcon, ExclamationCircleIcon, ArrowPathIcon } from '@heroicons/react/20/solid';
-import React, { useEffect, useState } from 'react';
+import { CheckCircleIcon, ExclamationCircleIcon } from '@heroicons/react/20/solid'
+import React, { useEffect, useState } from 'react'
+import Skeleton from 'react-content-loader'
+import Image from 'next/image'
 
 interface Chain {
-  chain_id: string;
-  chain_name: string;
-  rpc_urls: string[];
-  block_explorer_urls: string[];
-  native_currency_name: string;
-  native_currency_decimals: number;
-  native_currency_symbol: string;
+  icon_urls: any
+  chain_id: string
+  chain_name: string
+  rpc_urls: string[]
+  block_explorer_urls: string[]
+  native_currency_name: string
+  native_currency_decimals: number
+  native_currency_symbol: string
 }
 
 interface AddNetworkButtonProps {
-  children: React.ReactNode;
-  setIsConnected: (connected: boolean) => void;
-  onRpcUrlChanged: (rpcUrl: string | null) => void; 
+  children: React.ReactNode
+  setIsConnected: (connected: boolean) => void
+  onRpcUrlChanged: (rpcUrl: string | null) => void
 }
 
-
 const fetchChains = async (): Promise<Chain[]> => {
-  const response = await fetch('https://api.chains.eclipse.builders/evm_chains');
-  const data = await response.json();
-  return data;
-};
+  const response = await fetch('https://api.chains.eclipse.builders/evm_chains')
+  const data = await response.json()
+  return data
+}
 
-
-const isValidUrl = (url:string) => {
+const isValidUrl = (url: string) => {
   try {
-    new URL(url);
-    return true;
+    new URL(url)
+    return true
   } catch {
-    return false;
+    return false
   }
-};
+}
 
 const sanitizeUrl = (url: string) => {
-  const cleanedUrl = url.replace(/\s+/g, '');
-  return isValidUrl(cleanedUrl) ? cleanedUrl : null;
-};
+  const cleanedUrl = url.replace(/\s+/g, '')
+  return isValidUrl(cleanedUrl) ? cleanedUrl : null
+}
 
-export const AddNetworkButton: React.FC<AddNetworkButtonProps> = ({
-  children,
-  setIsConnected,
-  onRpcUrlChanged,
-}) => {
-  const [chains, setChains] = useState<Chain[]>([]);
-  const [selectedChain, setSelectedChain] = useState<Chain | null>(null);
-  const [isConnected, setConnected] = useState(false);
-  const [userSelectedChain, setUserSelectedChain] = useState<Chain | null>(
-    null
-  );
-  const [isLoading, setIsLoading] = useState(false);
+export const AddNetworkButton: React.FC<AddNetworkButtonProps> = ({ children, setIsConnected, onRpcUrlChanged }) => {
+  const [chains, setChains] = useState<Chain[]>([])
+  const [selectedChain, setSelectedChain] = useState<Chain | null>(null)
+  const [isConnected, setConnected] = useState(false)
+  const [userSelectedChain, setUserSelectedChain] = useState<Chain | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
+
   useEffect(() => {
-    if (typeof window !== "undefined" && window.ethereum) {
+    if (typeof window !== 'undefined' && window.ethereum) {
       const handleChainChanged = async () => {
         const currentChainId = await window.ethereum.request({
-          method: "eth_chainId",
-        });
-        const matchedChain = chains.find(
-          (chain) => chain.chain_id === currentChainId
-        );
+          method: 'eth_chainId',
+        })
+        const matchedChain = chains.find((chain) => chain.chain_id === currentChainId)
         if (matchedChain) {
-          setSelectedChain(matchedChain);
-          setConnected(true);
+          setSelectedChain(matchedChain)
+          setConnected(true)
         } else {
-          setSelectedChain(null);
-          setConnected(false);
+          setSelectedChain(null)
+          setConnected(false)
         }
-      };
+      }
 
-      handleChainChanged();
+      handleChainChanged()
 
-      window.ethereum.on("chainChanged", handleChainChanged);
+      window.ethereum.on('chainChanged', handleChainChanged)
 
       return () => {
-        window.ethereum.removeListener("chainChanged", handleChainChanged);
-      };
+        window.ethereum.removeListener('chainChanged', handleChainChanged)
+      }
     }
-  }, [chains, selectedChain, isConnected]);
+  }, [chains, selectedChain, isConnected])
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
+    if (typeof window !== 'undefined') {
       const checkConnectionStatus = async () => {
         if (window.ethereum && selectedChain) {
           const currentChainId = await window.ethereum.request({
-            method: "eth_chainId",
-          });
-          setConnected(currentChainId === selectedChain.chain_id);
+            method: 'eth_chainId',
+          })
+          setConnected(currentChainId === selectedChain.chain_id)
         }
-      };
+      }
 
-      checkConnectionStatus();
+      checkConnectionStatus()
     }
-  }, [selectedChain]);
+  }, [selectedChain])
 
   useEffect(() => {
-    (async () => {
-      setIsLoading(true);
-      const fetchedChains = await fetchChains();
-      setChains(fetchedChains);
-      setIsLoading(false);
-    })();
-  }, []);
-  
+    const fetchChainsData = async () => {
+      setIsLoading(true)
+      const fetchedChains = await fetchChains()
+      setChains(fetchedChains)
+      setIsLoading(false)
+    }
+
+    fetchChainsData()
+  }, [])
 
   useEffect(() => {
     if (selectedChain) {
-      onRpcUrlChanged(selectedChain.rpc_urls[0]);
+      onRpcUrlChanged(selectedChain.rpc_urls[0])
     } else {
-      onRpcUrlChanged(null);
+      onRpcUrlChanged(null)
     }
-  }, [selectedChain, onRpcUrlChanged]);
+  }, [selectedChain, onRpcUrlChanged])
 
-  const loadingSpinner = <ArrowPathIcon className="w-10 h-10 text-gray-200 animate-spin" />
+  const loadingSkeleton = (
+    <Skeleton
+      speed={3}
+      width={300}
+      height={900}
+      viewBox="0 0 300 60"
+      backgroundColor="#f0f0f0"
+      foregroundColor="#e0e0e0"
+      uniqueKey="custom-loader"
+    >
+      <rect x="0" y="0" rx="3" ry="3" width="300" height="60" />
+    </Skeleton>
+  )
 
   const sanitizedBlockExplorerUrls = selectedChain?.block_explorer_urls.map(sanitizeUrl).filter(Boolean)
 
@@ -135,9 +142,11 @@ export const AddNetworkButton: React.FC<AddNetworkButtonProps> = ({
             },
           ],
         })
+
         const currentChainId = await window.ethereum.request({
           method: 'eth_chainId',
         })
+
         if (currentChainId === chain.chain_id) {
           setIsConnected(true)
         } else {
@@ -165,11 +174,10 @@ export const AddNetworkButton: React.FC<AddNetworkButtonProps> = ({
     const chainId = e.target.value
     const selected = chains.find((chain) => chain.chain_id === chainId)
     setUserSelectedChain(selected || null)
-  }
 
-  const handleAddNetworkClick = () => {
-    if (userSelectedChain) {
-      addNetwork(userSelectedChain)
+    // If a chain is selected, automatically attempt to add the network
+    if (selected) {
+      addNetwork(selected)
     }
   }
 
@@ -199,27 +207,44 @@ export const AddNetworkButton: React.FC<AddNetworkButtonProps> = ({
 
   const { text, color, icon } = getStatusTextAndColor()
 
-  return (
-    <div className="flex flex-col justify-center items-center">
-      {isLoading || chains.length === 0 ? (
-        loadingSpinner
-      ) : (
-        <>
-          <div className="inline-block">
-            <select
-              onChange={handleChainChange}
-              value={userSelectedChain?.chain_id || ''}
-              className="block w-full bg-white border border-gray-200 text-gray-700 py-2 pl-3 pr-10 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 mb-2 hover:border-gray-300 rounded transition duration-150 ease-in-out"
+return (
+  <div className="flex flex-col justify-center items-center space-y-4">
+    {isLoading || chains.length === 0 ? (
+      loadingSkeleton
+    ) : (
+      <>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 w-full max-w-screen-xl">
+          {chains.map((chain) => (
+            <div
+              key={chain.chain_id}
+              className="border-2 border-gray-200 rounded-lg p-4 cursor-pointer hover:border-custom-yellow hover:shadow-lg transition-colors duration-200"
+              onClick={() => {
+                setUserSelectedChain(chain)
+                addNetwork(chain)
+              }}
             >
-              <option value="">Select a chain</option>
-              {chains.map((chain) => (
-                <option key={chain.chain_id} value={chain.chain_id}>
-                  {chain.chain_name}
-                </option>
-              ))}
-            </select>
-          </div>
+              <div className="flex items-center space-x-5">
+                {chain.icon_urls && chain.icon_urls[0] && (
+                  <img src={chain.icon_urls[0]} alt={chain.chain_name} className="w-14 h-14 object-cover rounded-full" />
+                )}
+                <div className="flex flex-col items-start">
+                  <h2 className="font-bold text-lg mb-2 text-gray-700">{chain.chain_name}</h2>
+                  <p className="text-gray-500">{chain.native_currency_symbol}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className={`flex items-center ${color}`}>
+          {icon}
+          {text}
+        </div>
+      </>
+    )}
+  </div>
+)
 
+<<<<<<< Updated upstream
           <button
             onClick={handleAddNetworkClick}
             className={`inline-flex items-center px-4 py-2 border-2 border-white focus:outline-none transition-all duration-300 ease-in ${
@@ -239,6 +264,8 @@ export const AddNetworkButton: React.FC<AddNetworkButtonProps> = ({
     </div>
   )
 };
+=======
+>>>>>>> Stashed changes
 
-export default AddNetworkButton;
 
+}

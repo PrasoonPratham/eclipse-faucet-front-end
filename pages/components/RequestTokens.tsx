@@ -89,7 +89,7 @@ const modifyRpcUrl = (url: string) => {
     <button
       className={`send inline-flex items-center px-4 py-2 border-2 border-white text-sm font-medium ${
         buttonStatus === 'idle'
-          ? 'bg-transparent text-white hover:bg-white hover:text-gray-700'
+          ? 'bg-black text-white hover:bg-white hover:text-gray-700'
           : buttonStatus === 'sending'
           ? 'bg-yellow-500 text-white'
           : buttonStatus === 'success'

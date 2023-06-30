@@ -3,6 +3,7 @@
 @tailwind components;
 @tailwind utilities;
 
+<<<<<<< Updated upstream
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
@@ -26,3 +27,9 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
+=======
+@font-face {
+  font-family: 'ABCMonumentGrotesk';
+  src: url('/assets/ABCMonumentGrotesk.otf') format('opentype');
+}
+>>>>>>> Stashed changes
