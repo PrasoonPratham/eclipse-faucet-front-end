@@ -11,10 +11,16 @@ import { ArrowUpRightIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/
 import RequestAirdrop from './components/RequestTokens'
 
 const stepsData = [
-  { number: 1, label: 'Complete Captcha', color: 'bg-custom-green' },
-  { number: 2, label: 'Connect wallet', color: 'bg-custom-blue' },
-  { number: 3, label: 'Choose chain', color: 'bg-custom-yellow' },
-  { number: 4, label: 'Airdrop', color: 'bg-custom-orange' },
+  {
+    number: 1,
+    label: 'Complete Captcha',
+    color: 'bg-custom-green',
+    textField: 'This is text for step 1.',
+    title: 'lol',
+  },
+  { number: 2, label: 'Connect wallet', color: 'bg-custom-blue', textField: 'This is text for step 2.', title: 'lol2' },
+  { number: 3, label: 'Choose chain', color: 'bg-custom-yellow', textField: 'This is text for step 3.', title: 'lol3' },
+  { number: 4, label: 'Airdrop', color: 'bg-custom-orange', textField: 'This is text for step 4.', title: 'lol4' },
 ]
 
 function getLibrary(provider: any): Web3Provider {
@@ -61,6 +67,8 @@ export default function Faucet() {
     setCaptchaValue(value)
   }
 
+  const currentStepData = stepsData.find((step) => step.number === currentStep)
+
   return (
     <>
       <nav className="flex items-center justify-between bg-black">
@@ -100,6 +108,13 @@ export default function Faucet() {
             </div>
           ))}
         </div>
+
+        {currentStepData && (
+          <div className="w-4/5 mt-3">
+            <h3 className="text-base font-semibold leading-6 text-gray-900">{currentStepData.title}</h3>
+            <p className="mt-2 max-w-4xl text-sm text-gray-500">{currentStepData.textField}</p>
+          </div>
+        )}
 
         <div className="flex items-center justify-center">
           <div className="flex items-center justify-center mt-5 sm:mt-0 sm:mx-auto sm:w-full ">

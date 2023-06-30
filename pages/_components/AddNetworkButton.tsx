@@ -107,105 +107,100 @@ export const AddNetworkButton: React.FC<AddNetworkButtonProps> = ({ children, se
     }
   }, [selectedChain, onRpcUrlChanged])
 
-  const loadingSkeleton = (
+const loadingSkeleton = (
+  <div className="w-full h-full sm:w-auto sm:h-auto md:w-96 md:h-96 lg:w-[600px] lg:h-[900px]">
     <Skeleton
       speed={3}
-      width={300}
-      height={900}
-      viewBox="0 0 300 60"
+      width="100%"
+      height="100%"
+      viewBox="0 0 300 160"
       backgroundColor="#f0f0f0"
       foregroundColor="#e0e0e0"
       uniqueKey="custom-loader"
     >
-      <rect x="0" y="0" rx="3" ry="3" width="300" height="60" />
+      <rect x="0" y="0" rx="3" ry="3" width="300" height="20" />
+      <rect x="0" y="30" rx="3" ry="3" width="300" height="20" />
+      <rect x="0" y="60" rx="3" ry="3" width="300" height="20" />
+      <rect x="0" y="90" rx="3" ry="3" width="300" height="20" />
+      <rect x="0" y="120" rx="3" ry="3" width="300" height="20" />
     </Skeleton>
-  )
-
-  const sanitizedBlockExplorerUrls = selectedChain?.block_explorer_urls.map(sanitizeUrl).filter(Boolean)
+  </div>
+)
 
   const addNetwork = async (chain: Chain) => {
-    if (typeof window !== 'undefined' && window.ethereum) {
-      try {
-        await window.ethereum.request({
-          method: 'wallet_addEthereumChain',
-          params: [
-            {
-              chainId: chain.chain_id,
-              chainName: chain.chain_name,
-              rpcUrls: chain.rpc_urls,
-              blockExplorerUrls: sanitizedBlockExplorerUrls,
-              nativeCurrency: {
-                name: chain.native_currency_name,
-                decimals: chain.native_currency_decimals,
-                symbol: chain.native_currency_symbol,
-              },
+  const sanitizedBlockExplorerUrls = selectedChain?.block_explorer_urls.map(sanitizeUrl).filter(Boolean)
+  if (typeof window !== 'undefined' && window.ethereum) {
+    try {
+      await window.ethereum.request({
+        method: 'wallet_addEthereumChain',
+        params: [
+          {
+            chainId: chain.chain_id,
+            chainName: chain.chain_name,
+            rpcUrls: chain.rpc_urls,
+            blockExplorerUrls: sanitizedBlockExplorerUrls,
+            nativeCurrency: {
+              name: chain.native_currency_name,
+              decimals: chain.native_currency_decimals,
+              symbol: chain.native_currency_symbol,
             },
-          ],
-        })
-
-        const currentChainId = await window.ethereum.request({
-          method: 'eth_chainId',
-        })
-
-        if (currentChainId === chain.chain_id) {
-          setIsConnected(true)
-        } else {
-          setIsConnected(false)
-        }
-      } catch (error: any) {
-        console.error('Error adding network:', error)
-        console.log('Parameters passed to wallet_addEthereumChain:', {
-          chainId: chain.chain_id,
-          chainName: chain.chain_name,
-          rpcUrls: chain.rpc_urls,
-          nativeCurrency: {
-            name: chain.native_currency_name,
-            decimals: chain.native_currency_decimals,
-            symbol: chain.native_currency_symbol,
           },
-        })
+        ],
+      })
+
+      const currentChainId = await window.ethereum.request({
+        method: 'eth_chainId',
+      })
+
+      if (currentChainId === chain.chain_id) {
+        setIsConnected(true)
+      } else {
+        setIsConnected(false)
       }
-    } else {
-      alert('Ethereum provider not found')
+    } catch (error: any) {
+      console.error('Error adding network:', error)
+      console.log('Parameters passed to wallet_addEthereumChain:', {
+        chainId: chain.chain_id,
+        chainName: chain.chain_name,
+        rpcUrls: chain.rpc_urls,
+        nativeCurrency: {
+          name: chain.native_currency_name,
+          decimals: chain.native_currency_decimals,
+          symbol: chain.native_currency_symbol,
+        },
+      })
     }
+  } else {
+    alert('Ethereum provider not found')
   }
+}
 
-  const handleChainChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const chainId = e.target.value
-    const selected = chains.find((chain) => chain.chain_id === chainId)
-    setUserSelectedChain(selected || null)
 
-    // If a chain is selected, automatically attempt to add the network
-    if (selected) {
-      addNetwork(selected)
-    }
-  }
-
-  const getStatusTextAndColor = () => {
-    if (typeof window !== 'undefined' && window.ethereum) {
-      const currentChainId = window.ethereum.chainId
-      if (
-        isConnected &&
-        selectedChain &&
-        userSelectedChain &&
-        selectedChain.chain_id === currentChainId &&
-        userSelectedChain.chain_id === currentChainId
-      ) {
-        return {
-          text: `Connected: ${selectedChain.chain_name}`,
-          color: 'text-green-500',
-          icon: <CheckCircleIcon className="w-4 h-4 mr-2" />,
-        }
+const getStatusTextAndColor = () => {
+  if (typeof window !== 'undefined' && window.ethereum) {
+    const currentChainId = window.ethereum.chainId
+    if (
+      isConnected &&
+      selectedChain &&
+      userSelectedChain &&
+      selectedChain.chain_id === currentChainId &&
+      userSelectedChain.chain_id === currentChainId
+    ) {
+      return {
+        text: `Connected: ${selectedChain.chain_name}`,
+        color: 'text-green-500',
+        icon: <CheckCircleIcon className="w-4 h-4 mr-2" />,
       }
     }
-    return {
-      text: 'Not connected',
-      color: 'text-red-500',
-      icon: <ExclamationCircleIcon className="w-4 h-4 mr-2" />,
-    }
   }
+  return {
+    text: 'Not connected',
+    color: 'text-red-500',
+    icon: <ExclamationCircleIcon className="w-4 h-4 mr-2" />,
+  }
+}
 
-  const { text, color, icon } = getStatusTextAndColor()
+const { text, color, icon } = getStatusTextAndColor()
 
 return (
   <div className="flex flex-col justify-center items-center space-y-4">
@@ -225,7 +220,11 @@ return (
             >
               <div className="flex items-center space-x-5">
                 {chain.icon_urls && chain.icon_urls[0] && (
-                  <img src={chain.icon_urls[0]} alt={chain.chain_name} className="w-14 h-14 object-cover rounded-full" />
+                  <img
+                    src={chain.icon_urls[0]}
+                    alt={chain.chain_name}
+                    className="w-14 h-14 object-cover rounded-full"
+                  />
                 )}
                 <div className="flex flex-col items-start">
                   <h2 className="font-bold text-lg mb-2 text-gray-700">{chain.chain_name}</h2>
@@ -243,7 +242,6 @@ return (
     )}
   </div>
 )
-
-
-
 }
+
+export default AddNetworkButton
