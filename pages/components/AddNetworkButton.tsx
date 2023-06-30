@@ -244,28 +244,6 @@ return (
   </div>
 )
 
-<<<<<<< Updated upstream
-          <button
-            onClick={handleAddNetworkClick}
-            className={`inline-flex items-center px-4 py-2 border-2 border-white focus:outline-none transition-all duration-300 ease-in ${
-              !selectedChain
-                ? 'bg-transparent text-white hover:bg-white hover:text-gray-700'
-                : 'bg-transparent text-white hover:bg-white hover:text-gray-700'
-            } focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}
-          >
-            {children}
-          </button>
-          <p className={`mt-2 flex items-center ${color}`}>
-            {icon}
-            {text}
-          </p>
-        </>
-      )}
-    </div>
-  )
-};
-=======
->>>>>>> Stashed changes
 
 
 }

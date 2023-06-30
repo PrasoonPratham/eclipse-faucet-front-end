@@ -2,16 +2,10 @@ import React, { useState, useEffect } from 'react'
 import { Web3ReactProvider, useWeb3React } from '@web3-react/core'
 import { Web3Provider } from '@ethersproject/providers'
 import ReCAPTCHA from 'react-google-recaptcha'
-<<<<<<< Updated upstream
-import { Transition } from '@headlessui/react'
-import { CheckIcon, ArrowPathIcon } from '@heroicons/react/20/solid'
-import ConnectWalletButton from './components/ConnectWalletButton'
-=======
 import ConnectWalletButton, { injectedConnector } from './components/ConnectWalletButton'
 import Link from 'next/link'
 import Image from 'next/image'
 import logo from './assets/logo.svg'
->>>>>>> Stashed changes
 import { AddNetworkButton } from './components/AddNetworkButton'
 import { ArrowUpRightIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid'
 import RequestAirdrop from './components/RequestTokens'
@@ -84,15 +78,6 @@ export default function Faucet() {
     }
 
   return (
-<<<<<<< Updated upstream
-    <div>
-      <div className="bg-black h-screen p-5">
-        <div className="border-b border-gray-200 pb-5 md:mx-32 lg:mx-8 xl:mx-72 my-10">
-          <h3 className="text-2xl text-gray-200 font-semibold leading-6 text-white-900">Eclipse EVM Faucet</h3>
-          <p className="mt-2 max-w-4xl text-sm text-gray-200">
-            Get testnet tokens to your wallet for any of the Eclipse EVM chains!
-          </p>
-=======
     <>
       <nav className="flex items-center justify-between bg-black">
         <div className="flex items-center">
@@ -130,7 +115,6 @@ export default function Faucet() {
               </div>
             </div>
           ))}
->>>>>>> Stashed changes
         </div>
 
         <div className="flex items-center justify-center">
