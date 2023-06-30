@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Web3ReactProvider, useWeb3React } from '@web3-react/core'
 import { Web3Provider } from '@ethersproject/providers'
 import ReCAPTCHA from 'react-google-recaptcha'
-import ConnectWalletButton, { injectedConnector } from './components/ConnectWalletButton'
+import ConnectWalletButton from './components/ConnectWalletButton'
 import Link from 'next/link'
 import Image from 'next/image'
 import logo from './assets/logo.svg'
@@ -60,22 +60,6 @@ export default function Faucet() {
   const handleCaptchaChange = (value: string | null) => {
     setCaptchaValue(value)
   }
-
-    async function pubKey() {
-      // Request the user's accounts
-      const accounts = (await (window as any).ethereum.request({ method: 'eth_requestAccounts' })) as string[]
-
-      // Get the first account from the accounts array
-      const account = accounts[0]
-
-      if (account) {
-        console.log('Account address:', account)
-        console.log('Airdrop requested for account:', account)
-        setCurrentAccount(account)
-      } else {
-        console.log('No account found.')
-      }
-    }
 
   return (
     <>
