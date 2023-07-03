@@ -76,7 +76,21 @@ export default function Faucet() {
         <title>Eclipse Faucet</title>
         <meta property="og:title" content="Eclipse Faucet" />
         <meta property="og:description" content="Get testnet tokens for any Eclipse chain" />
-        <meta property="og:image" content="pages/assets/card.png" />
+        <meta
+          property="og:image"
+          content="https://yellow-lively-cobra-691.mypinata.cloud/ipfs/QmXDSTq6jDdoHk3FSzgMaEcPr7si3e86GtpkhdUDJkrqbQ"
+        />
+        <meta
+          property="twitter:image"
+          content="https://yellow-lively-cobra-691.mypinata.cloud/ipfs/QmXDSTq6jDdoHk3FSzgMaEcPr7si3e86GtpkhdUDJkrqbQ"
+        ></meta>
+        <meta
+          property="twitter:card"
+          content="https://yellow-lively-cobra-691.mypinata.cloud/ipfs/QmXDSTq6jDdoHk3FSzgMaEcPr7si3e86GtpkhdUDJkrqbQ"
+        ></meta>
+        <meta property="twitter:title" content="Eclipse Faucet"></meta>
+        <meta property="twitter:description" content="Get testnet tokens for your favourite eclipse chain"></meta>
+        <meta property="description" content="Get testnet tokens for your favourite eclipse chain" />
       </Head>
       <nav className="flex items-center justify-between bg-black">
         <div className="flex items-center">
