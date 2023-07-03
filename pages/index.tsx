@@ -9,6 +9,7 @@ import logo from './assets/logo.svg'
 import { AddNetworkButton } from './_components/AddNetworkButton'
 import { ArrowUpRightIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid'
 import RequestAirdrop from './_components/RequestTokens'
+import Head from 'next/head'
 
 const stepsData = [
   {
@@ -71,6 +72,12 @@ export default function Faucet() {
 
   return (
     <>
+      <Head>
+        <title>Eclipse Faucet</title>
+        <meta property="og:title" content="Eclipse Faucet" />
+        <meta property="og:description" content="Get testnet tokens for any Eclipse chain" />
+        <meta property="og:image" content="pages/assets/card.png" />
+      </Head>
       <nav className="flex items-center justify-between bg-black">
         <div className="flex items-center">
           <Link href="/">
