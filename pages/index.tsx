@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react'
 import { Web3ReactProvider, useWeb3React } from '@web3-react/core'
 import { Web3Provider } from '@ethersproject/providers'
 import ReCAPTCHA from 'react-google-recaptcha'
-import ConnectWalletButton from './components/ConnectWalletButton'
+import ConnectWalletButton from './_components/ConnectWalletButton'
 import Link from 'next/link'
 import Image from 'next/image'
 import logo from './assets/logo.svg'
-import { AddNetworkButton } from './components/AddNetworkButton'
+import { AddNetworkButton } from './_components/AddNetworkButton'
 import { ArrowUpRightIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid'
-import RequestAirdrop from './components/RequestTokens'
+import RequestAirdrop from './_components/RequestTokens'
 
 const stepsData = [
   {
